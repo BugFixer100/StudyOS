@@ -1,0 +1,64 @@
+YOU
+ ↓
+Describe requirement
+ ↓
+AI designs feature
+ ↓
+AI explains design
+ ↓
+AI writes implementation
+ ↓
+YOU run it
+ ↓
+YOU test it
+ ↓
+AI helps debug
+ ↓
+Next feature
+
+
+
+
+
+
+
+DEV PROMPT 
+
+
+I want to build the University Study Management System described below.
+
+DO NOT write code yet.
+
+First act as a Senior Software Architect.
+
+Analyze the requirements and give me:
+
+1. The core problem the application is solving.
+2. The most important MVP features.
+3. Recommended technology stack.
+4. Why you recommend this stack.
+5. High-level architecture.
+6. Database design.
+7. Main entities and their relationships.
+8. Application pages/screens.
+9. Main user flows.
+10. Folder/project structure.
+11. Development phases.
+12. Which features should NOT be built initially.
+13. Potential technical problems and how to avoid them.
+
+Important:
+I am a university CS student and I want to understand what I am building.
+
+Therefore:
+- Explain technical decisions in simple language.
+- Do not over-engineer.
+- Prefer a simple architecture that I can understand.
+- Do not introduce unnecessary technologies.
+- Do not write implementation code yet.
+
+After your analysis, wait for my approval before moving to implementation.
+
+Here is the complete product specification:
+
+[PASTE THE MASTER PROMPT HERE]

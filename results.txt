@@ -1,0 +1,71 @@
+🌅 Morning — 2 minutes
+
+Open:
+
+TODAY
+
+You see:
+
+
+TODAY
+
+09:00 Compiler Construction
+11:10 Web Engineering
+14:00 Machine Learning Lab
+
+🔴 URGENT
+OS Lab Report — due tomorrow
+
+📚 NEXT CLASS
+Machine Learning
+
+Previous lecture:
+Linear Regression
+
+Teacher emphasized:
+Cost function
+
+🎯 TOP 3
+□ OS Lab Report
+□ Review Compiler lecture
+□ ML homework
+
+
+
+
+
+🏫 After each class — 2 minutes
+Click:
+
+Complete Class → Lecture Capture
+
+Enter only:
+
+Topics:
+CFG, derivations
+
+Teacher emphasized:
+Difference between CFG and regular grammar
+
+Homework:
+Practice 5 CFG problems
+
+Confused about:
+Ambiguity
+
+
+
+🌙 Night — 2 minutes
+
+Click:
+
+Daily Review
+
+The app asks:
+
+
+✓ What did you complete?
+✓ What remains?
+✓ Did you capture today's lectures?
+✓ Did any teacher give new work?
+✓ What must be done tomorrow?

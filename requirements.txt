@@ -1,0 +1,64 @@
+StudyOS
+│
+├── 📚 Courses
+├── 🗓️ Timetable
+├── 🧠 Lecture Memory
+├── ✅ Tasks
+├── 🧪 Labs
+├── ⏰ Deadlines
+├── 📝 Assignments
+├── 🎯 Daily Plan
+├── 📖 Exam Prep
+└── 🔔 Reminders
+
+
+
+
+
+                 YOUR ACADEMIC SYSTEM
+                         │
+        ┌────────────────┼────────────────┐
+        ↓                ↓                ↓
+   REMEMBER           ORGANIZE          ACT
+        │                │                │
+  Last lecture      Courses          Today's tasks
+  Teacher points    Timetable        Deadlines
+  Homework          Labs             Submissions
+  Questions         Assignments      Study sessions
+        │                │                │
+        └────────────────┼────────────────┘
+                         ↓
+                  DON'T FORGET
+                         │
+                 Alerts + Review
+
+
+
+
+
+              ATTEND CLASS
+                   ↓
+           Mark class complete
+                   ↓
+        2-Minute Lecture Capture
+                   ↓
+       Save "What was taught?"
+                   ↓
+          Homework captured
+                   ↓
+             Days pass
+                   ↓
+            NEXT CLASS
+                   ↓
+        "QUICK REVIEW" appears
+                   ↓
+       Read previous lecture
+             for 2–5 min
+                   ↓
+             ENTER CLASS
+                   ↓
+          Understand context
+                   ↓
+              ATTEND CLASS
+                   ↓
+                 🔄

@@ -1,0 +1,1634 @@
+Act as a senior software architect, UX designer, product manager, and full-stack developer.
+
+I want you to design and build a personal University Study Management System for me.
+
+IMPORTANT:
+Do NOT treat this as a generic To-Do List application.
+
+The application must specifically solve the problems of a university student who has many theory courses, lab courses, lectures, assignments, homework, lab tasks, quizzes, exams, and deadlines.
+
+The primary goal is:
+
+"Never forget what I need to do, never miss an academic deadline, and never enter a class without knowing what was taught previously."
+
+--------------------------------------------------
+1. MY CORE PROBLEM
+--------------------------------------------------
+
+I currently struggle with:
+
+1. Managing many courses simultaneously.
+2. Remembering homework given by different teachers.
+3. Remembering lab assignments and lab submission deadlines.
+4. Forgetting what was taught in the previous lecture.
+5. Forgetting what I need to prepare before the next class.
+6. Missing assignment/lab submissions.
+7. Having tasks scattered across notebooks, WhatsApp messages, LMS, screenshots, and memory.
+8. Not knowing what I should study TODAY.
+9. Not knowing which tasks are becoming urgent.
+10. Feeling overwhelmed because I cannot see my entire academic workload clearly.
+
+The system must reduce my dependence on memory.
+
+The application should essentially become my external academic memory.
+
+--------------------------------------------------
+2. MY CURRENT COURSE STRUCTURE
+--------------------------------------------------
+
+I currently have 10 courses:
+
+THEORY COURSES:
+1. Compiler Construction
+2. Machine Learning
+3. Web Engineering
+4. Linear Algebra
+5. Operating Systems
+6. Computer Architecture
+
+LAB COURSES:
+1. Compiler Construction Lab
+2. Machine Learning Lab
+3. Web Engineering Lab
+4. Operating Systems Lab
+
+The system must support both Theory and Lab courses because their workflows are different.
+
+For example:
+
+Theory:
+Lecture → topics → notes → homework → quiz/exam preparation
+
+Lab:
+Lab session → task/experiment → implementation → report → submission → demonstration/viva
+
+--------------------------------------------------
+3. CORE DESIGN PRINCIPLE
+--------------------------------------------------
+
+The application must answer these questions immediately:
+
+A. What do I have today?
+B. What classes do I have today?
+C. What did I learn in the previous class?
+D. What homework/assignments do I have?
+E. What is due soon?
+F. What am I in danger of forgetting?
+G. What should I work on right now?
+H. What do I need to prepare before my next class?
+I. Which courses have I been neglecting?
+J. What academic work is incomplete?
+
+The home screen should make these answers obvious.
+
+--------------------------------------------------
+4. MAIN DASHBOARD
+--------------------------------------------------
+
+Create a dashboard called:
+
+"Today"
+
+It should contain:
+
+### A. TODAY'S CLASSES
+
+Show today's timetable.
+
+For every class display:
+
+- Course name
+- Theory/Lab
+- Start time
+- End time
+- Room
+- Instructor (if available)
+- Class status:
+  - Upcoming
+  - In Progress
+  - Completed
+
+Example:
+
+09:00 — Compiler Construction Lab
+11:10 — Compiler Construction
+02:00 — Machine Learning Lab
+
+--------------------------------------------------
+
+### B. NEXT CLASS
+
+Show:
+
+NEXT CLASS
+
+Course:
+Machine Learning
+
+Time:
+02:00 PM
+
+Preparation:
+- Review previous lecture
+- Complete unfinished exercise
+- Read today's topic
+
+Most importantly:
+
+Show a "Previous Lecture" card.
+
+Example:
+
+PREVIOUS LECTURE:
+"Supervised vs Unsupervised Learning"
+
+Teacher emphasized:
+"Difference between classification and regression"
+
+Homework:
+"Implement Linear Regression"
+
+This section is extremely important.
+
+--------------------------------------------------
+5. "LAST LECTURE MEMORY" SYSTEM
+--------------------------------------------------
+
+This is one of the most important features.
+
+After every class, the application should encourage me to record a very short lecture summary.
+
+Do NOT force me to write long notes.
+
+Create a "2-Minute Lecture Capture" form.
+
+When I mark a class as completed, show:
+
+WHAT DID YOU LEARN?
+
+1. Topics covered:
+[ text ]
+
+2. Important concepts:
+[ text ]
+
+3. What did the teacher emphasize?
+[ text ]
+
+4. Homework/task given?
+[ text ]
+
+5. What should I remember for the next class?
+[ text ]
+
+6. Anything confusing?
+[ text ]
+
+7. Teacher mentioned quiz/assignment/exam?
+[ text ]
+
+Allow skipping fields.
+
+The goal is to capture enough information so that before the next class I can quickly refresh my memory.
+
+--------------------------------------------------
+6. PRE-CLASS "LAST LECTURE REVIEW"
+--------------------------------------------------
+
+Before every class, automatically show:
+
+"QUICK REVIEW"
+
+Course:
+Compiler Construction
+
+LAST CLASS:
+- Topic 1
+- Topic 2
+- Important concept
+- Homework
+- Teacher emphasis
+- Unresolved question
+
+Then provide:
+
+[Mark Reviewed]
+
+The system should make reviewing the previous lecture extremely easy.
+
+It should take approximately 2–5 minutes.
+
+--------------------------------------------------
+7. ACADEMIC TASK MANAGEMENT
+--------------------------------------------------
+
+Create a task system specifically designed for university work.
+
+Task types:
+
+- Homework
+- Assignment
+- Lab Assignment
+- Lab Report
+- Project
+- Quiz Preparation
+- Exam Preparation
+- Reading
+- Practice
+- Coding Task
+- Submission
+- Presentation
+- Viva Preparation
+- Other
+
+Every task should support:
+
+- Title
+- Course
+- Task type
+- Description
+- Created date
+- Due date
+- Due time
+- Estimated time
+- Priority
+- Status
+- Progress
+- Attachment
+- Notes
+- Subtasks
+- Submission method
+- Submission link
+- Teacher/instructor
+- Reminder
+
+Statuses:
+
+- Not Started
+- In Progress
+- Blocked
+- Submitted
+- Completed
+
+--------------------------------------------------
+8. SMART DEADLINE SYSTEM
+--------------------------------------------------
+
+Do not simply show deadlines.
+
+Calculate urgency.
+
+For example:
+
+7+ days:
+"Upcoming"
+
+3–6 days:
+"Plan Soon"
+
+1–2 days:
+"Urgent"
+
+Due today:
+"DUE TODAY"
+
+Overdue:
+"OVERDUE"
+
+Also consider estimated workload.
+
+Example:
+
+Task A:
+Due tomorrow
+Estimated time: 6 hours
+
+Task B:
+Due tomorrow
+Estimated time: 30 minutes
+
+Task A should receive greater attention.
+
+Create a "Danger Zone":
+
+Tasks that are:
+
+- overdue
+- due soon
+- high priority
+- large workload
+- not started
+- repeatedly postponed
+
+--------------------------------------------------
+9. DAILY ACTION PLAN
+--------------------------------------------------
+
+Every morning, generate:
+
+"MY PLAN FOR TODAY"
+
+Include:
+
+1. Classes today
+2. Deadlines today
+3. Urgent tasks
+4. Recommended study tasks
+5. Previous lecture reviews
+6. Pending lab work
+7. Small tasks that can be completed quickly
+
+Do NOT overwhelm me with 30 tasks.
+
+Prioritize approximately 3–5 important academic actions.
+
+Example:
+
+TODAY'S TOP 5
+
+1. Finish Operating Systems Lab — 90 min
+2. Review Compiler Construction previous lecture — 15 min
+3. Submit Web Engineering Lab — 30 min
+4. Practice Linear Algebra — 45 min
+5. Capture Machine Learning lecture notes
+
+--------------------------------------------------
+10. WEEKLY ACADEMIC OVERVIEW
+--------------------------------------------------
+
+Create a weekly dashboard.
+
+Show:
+
+MONDAY
+Classes
+Tasks
+Deadlines
+
+TUESDAY
+Classes
+Tasks
+Deadlines
+
+...
+
+SUNDAY
+
+Also show:
+
+COURSE HEALTH
+
+Compiler Construction: ███████░░░
+Machine Learning: █████░░░░░
+Web Engineering: ████████░░
+...
+
+Course health should be based on:
+
+- pending tasks
+- overdue tasks
+- recent lecture reviews
+- upcoming deadlines
+- study activity
+
+Do not make this unnecessarily complicated.
+
+--------------------------------------------------
+11. COURSE PAGES
+--------------------------------------------------
+
+Every course should have its own page.
+
+Example:
+
+Compiler Construction
+
+Sections:
+
+Overview
+Timetable
+Lectures
+Assignments
+Homework
+Labs
+Projects
+Notes
+Resources
+Exams
+Progress
+
+The course page should show:
+
+Upcoming tasks
+Recent lectures
+Last lecture
+Next class
+Pending work
+Completed work
+Important resources
+
+--------------------------------------------------
+12. LECTURE HISTORY
+--------------------------------------------------
+
+Create a chronological lecture history.
+
+Example:
+
+Compiler Construction
+
+Lecture 01
+Date:
+Topics:
+Notes:
+Homework:
+
+Lecture 02
+Date:
+Topics:
+Notes:
+Homework:
+
+Lecture 03
+Date:
+Topics:
+Notes:
+Homework:
+
+Allow me to search lecture history.
+
+Search examples:
+
+"Where did we study CFG?"
+"When did teacher explain lexical analysis?"
+"What homework was given last week?"
+
+--------------------------------------------------
+13. LAB MANAGEMENT
+--------------------------------------------------
+
+Labs need a separate workflow.
+
+For each lab:
+
+Lab #
+Date
+Course
+Experiment/Task
+Instructions
+Implementation
+Report
+Deadline
+Submission
+Viva/Demo
+Status
+
+Example:
+
+Machine Learning Lab #04
+
+Task:
+Implement Logistic Regression
+
+Status:
+Implementation completed
+
+Report:
+Not completed
+
+Submission:
+Due Friday
+
+Viva:
+Pending
+
+Use a progress pipeline:
+
+Task Given
+↓
+Understanding
+↓
+Implementation
+↓
+Testing
+↓
+Report
+↓
+Submission
+↓
+Viva
+
+This should make lab work much easier to track.
+
+--------------------------------------------------
+14. ASSIGNMENT SUBMISSION SAFETY
+--------------------------------------------------
+
+This is critical.
+
+The system must make it difficult for me to accidentally miss a submission.
+
+For every submission-based task:
+
+Show:
+
+DUE:
+Friday 11:59 PM
+
+STATUS:
+Not Submitted
+
+Create reminders such as:
+
+7 days before
+3 days before
+1 day before
+6 hours before
+1 hour before
+
+Allow the user to customize reminders.
+
+After I mark something as submitted:
+
+Ask:
+
+"Are you sure this has been submitted?"
+
+Then record:
+
+Submission date/time
+Submission method
+Submission link/file
+Optional screenshot/proof
+
+This creates a submission history.
+
+--------------------------------------------------
+15. QUICK CAPTURE
+--------------------------------------------------
+
+I need to be able to add information extremely quickly.
+
+Create a global:
+
+"+ Quick Add"
+
+button.
+
+It should allow:
+
+Add Task
+Add Homework
+Add Assignment
+Add Lab
+Add Lecture
+Add Deadline
+Add Note
+Add Resource
+
+The user should not need to navigate through multiple pages.
+
+Example:
+
+I type:
+
+"Compiler teacher gave homework: explain FIRST and FOLLOW, due Thursday"
+
+The system should intelligently extract:
+
+Course:
+Compiler Construction
+
+Task:
+Explain FIRST and FOLLOW
+
+Type:
+Homework
+
+Due:
+Thursday
+
+Allow me to confirm before saving.
+
+If AI functionality is unavailable, provide a normal form.
+
+--------------------------------------------------
+16. NATURAL LANGUAGE INPUT
+--------------------------------------------------
+
+Support natural-language task creation.
+
+Examples:
+
+"ML assignment due Friday"
+"OS lab report due tomorrow"
+"Review today's compiler lecture"
+"Practice matrices for 1 hour tomorrow"
+"Machine Learning quiz next Monday"
+
+Parse:
+
+Course
+Task
+Date
+Time
+Priority
+Type
+
+Always allow manual correction.
+
+--------------------------------------------------
+17. REMINDERS AND NOTIFICATIONS
+--------------------------------------------------
+
+Support notifications for:
+
+- Upcoming classes
+- Previous lecture review
+- Homework
+- Assignments
+- Lab submissions
+- Exams
+- Quizzes
+- Tasks becoming overdue
+
+But avoid notification spam.
+
+Use intelligent reminders.
+
+For example:
+
+Instead of:
+
+"You have an assignment."
+
+Use:
+
+"Web Engineering Lab is due tomorrow at 11:59 PM. Estimated work: 2 hours. You haven't started it yet."
+
+--------------------------------------------------
+18. "WHAT AM I FORGETTING?" FEATURE
+--------------------------------------------------
+
+Create a special button:
+
+"CHECK MY ACADEMICS"
+
+When clicked, scan the entire academic system and identify:
+
+- overdue tasks
+- tasks without deadlines
+- assignments not started
+- labs without submission status
+- recent lectures without summaries
+- classes with no lecture record
+- upcoming exams
+- tasks due soon
+- incomplete subtasks
+- courses with little recent activity
+
+Then produce:
+
+"Things you may have forgotten"
+
+This feature is extremely important.
+
+--------------------------------------------------
+19. COURSE BALANCE
+--------------------------------------------------
+
+Because I have many courses, help me see imbalance.
+
+Example:
+
+Machine Learning:
+High activity
+
+Compiler Construction:
+High activity
+
+Linear Algebra:
+Low activity
+
+Operating Systems:
+Medium activity
+
+The system should warn:
+
+"You haven't recorded or studied Linear Algebra for 6 days."
+
+Do not shame the user.
+
+The goal is awareness.
+
+--------------------------------------------------
+20. SEARCH
+--------------------------------------------------
+
+Global search should search:
+
+Courses
+Lectures
+Tasks
+Assignments
+Labs
+Notes
+Resources
+
+Example:
+
+Search:
+"CFG"
+
+Results:
+
+Compiler Construction
+Lecture 04
+Lecture 05
+Homework
+Notes
+Related resources
+
+--------------------------------------------------
+21. ATTACHMENTS
+--------------------------------------------------
+
+Allow attachments to:
+
+Courses
+Lectures
+Assignments
+Labs
+Tasks
+
+Possible files:
+
+PDF
+DOCX
+PPTX
+Images
+ZIP
+Code files
+Screenshots
+
+Example:
+
+Compiler Construction
+→ Lecture 05
+→ Lecture slides.pdf
+
+Machine Learning Lab 03
+→ dataset.csv
+→ notebook.ipynb
+→ report.docx
+
+--------------------------------------------------
+22. TIMETABLE
+--------------------------------------------------
+
+Create a timetable system.
+
+I should be able to enter:
+
+Course
+Day
+Start time
+End time
+Room
+Instructor
+Theory/Lab
+
+Support recurring weekly classes.
+
+The current timetable contains:
+
+Monday:
+Compiler Construction Lab
+Compiler Construction Lab/related scheduled sessions
+Machine Learning Lab
+
+Tuesday:
+Compiler Construction
+Web Engineering Lab
+
+Wednesday:
+Web Engineering
+Machine Learning
+Linear Algebra
+
+Thursday:
+Operating Systems Lab
+Operating Systems
+
+Friday:
+Computer Architecture
+
+Use the provided timetable image as the source when implementing the initial schedule, but make the timetable editable.
+
+Do NOT hard-code the timetable permanently.
+
+--------------------------------------------------
+23. CALENDAR
+--------------------------------------------------
+
+Provide:
+
+Daily view
+Weekly view
+Monthly view
+
+The calendar should combine:
+
+Classes
+Assignments
+Labs
+Homework
+Exams
+Quizzes
+Study sessions
+
+Use different visual indicators for different types of events.
+
+--------------------------------------------------
+24. STUDY SESSION TRACKING
+--------------------------------------------------
+
+Allow me to start a study session.
+
+Example:
+
+[Start Study Session]
+
+Course:
+Compiler Construction
+
+Task:
+Study Context-Free Grammar
+
+Duration:
+45 minutes
+
+When completed:
+
+Ask:
+
+"What did you accomplish?"
+
+Save the session.
+
+Show weekly study statistics.
+
+Do not turn this into a complicated Pomodoro application unless necessary.
+
+--------------------------------------------------
+25. ACADEMIC INBOX
+--------------------------------------------------
+
+Create an Inbox.
+
+Anything I don't know where to put goes into:
+
+INBOX
+
+Examples:
+
+"Teacher mentioned assignment."
+"Need to ask sir about lab."
+"Quiz maybe next week."
+"Need slides."
+"Need to understand this topic."
+
+Later I can convert Inbox items into:
+
+Task
+Note
+Reminder
+Question
+Assignment
+Lecture information
+
+This prevents small pieces of information from being forgotten.
+
+--------------------------------------------------
+26. QUESTIONS TO ASK TEACHER
+--------------------------------------------------
+
+Each course should have:
+
+"Questions / Doubts"
+
+Example:
+
+Compiler Construction:
+
+□ What is the difference between X and Y?
+□ Ask about FIRST/FOLLOW
+□ Clarify assignment requirement
+
+Before class, show:
+
+"Questions you wanted to ask"
+
+This prevents me from forgetting questions.
+
+--------------------------------------------------
+27. EXAM PREPARATION
+--------------------------------------------------
+
+Create an exam preparation section.
+
+For each exam:
+
+Course
+Exam date
+Syllabus
+Topics
+Preparation status
+Practice completed
+Weak topics
+Resources
+
+Allow:
+
+Topic checklist
+
+Example:
+
+Computer Architecture Exam
+
+✓ Cache Memory
+✓ CPU Organization
+□ Pipelining
+□ Virtual Memory
+□ I/O
+
+Show preparation percentage.
+
+--------------------------------------------------
+28. HOMEWORK / ASSIGNMENT LIFECYCLE
+--------------------------------------------------
+
+Every academic task should follow:
+
+Captured
+↓
+Planned
+↓
+Started
+↓
+In Progress
+↓
+Completed
+↓
+Submitted
+
+This allows me to see exactly where work is stuck.
+
+--------------------------------------------------
+29. OVERLOAD DETECTION
+--------------------------------------------------
+
+The application should detect when too much work is accumulating.
+
+Example:
+
+"This week you have:
+
+4 assignments
+3 lab reports
+2 quizzes
+1 project
+
+Estimated workload:
+14.5 hours"
+
+Then recommend:
+
+"Start Operating Systems Lab today because it has the highest workload-to-deadline urgency."
+
+Keep recommendations simple and explain WHY.
+
+--------------------------------------------------
+30. DASHBOARD PRIORITY
+--------------------------------------------------
+
+The dashboard should prioritize:
+
+1. Things due today
+2. Overdue work
+3. Things due tomorrow
+4. Upcoming classes
+5. Previous lecture review
+6. Important upcoming work
+7. Everything else
+
+Do not show everything equally.
+
+The UI must reduce cognitive overload.
+
+--------------------------------------------------
+31. UX PRINCIPLES
+--------------------------------------------------
+
+The application should be:
+
+- Clean
+- Fast
+- Minimal
+- Student-friendly
+- Desktop-friendly
+- Responsive
+- Easy to understand
+- Low cognitive load
+
+Avoid:
+
+- Excessive animations
+- Unnecessary gamification
+- Too many colors
+- Complex navigation
+- Huge forms
+- Unnecessary features
+- Productivity jargon
+
+The user should understand the dashboard within 5 seconds.
+
+--------------------------------------------------
+32. DESKTOP + WEB
+--------------------------------------------------
+
+Design the system so it can work as:
+
+1. Web application
+2. Desktop application
+
+Prefer an architecture that allows the same core application to be packaged as a desktop app later.
+
+If selecting the technology stack, prioritize:
+
+- maintainability
+- performance
+- simplicity
+- local-first functionality
+- easy development
+- future scalability
+
+You may recommend an appropriate modern stack, but explain WHY before implementing it.
+
+--------------------------------------------------
+33. LOCAL-FIRST DESIGN
+--------------------------------------------------
+
+This is a personal academic management application.
+
+It should work even when internet access is unavailable for basic functionality.
+
+At minimum, the following should work offline:
+
+- View timetable
+- View tasks
+- Add tasks
+- Edit tasks
+- View lectures
+- Add lecture records
+- View deadlines
+- Mark tasks complete
+- Search local data
+
+Synchronisation can be added later.
+
+--------------------------------------------------
+34. DATA MODEL
+--------------------------------------------------
+
+Design a proper database schema.
+
+At minimum, consider entities such as:
+
+User
+Course
+ClassSchedule
+Lecture
+Task
+Subtask
+Assignment
+Lab
+Exam
+Quiz
+StudySession
+Note
+Resource
+Reminder
+Question
+Submission
+InboxItem
+
+Define relationships carefully.
+
+Example:
+
+Course
+  ├── Classes
+  ├── Lectures
+  ├── Tasks
+  ├── Labs
+  ├── Exams
+  ├── Notes
+  └── Resources
+
+--------------------------------------------------
+35. IMPORTANT RELATIONSHIP
+--------------------------------------------------
+
+A lecture must be connected to:
+
+Course
+Date
+Class session
+Topics
+Teacher emphasis
+Homework
+Questions
+Notes
+Attachments
+
+A task must be connected to:
+
+Course
+Task type
+Deadline
+Priority
+Estimated time
+Status
+Subtasks
+Submission
+
+A lab must be connected to:
+
+Course
+Lab number
+Date
+Task
+Implementation
+Report
+Submission
+Viva
+
+--------------------------------------------------
+36. HOME PAGE EXAMPLE
+--------------------------------------------------
+
+Design the home page approximately like this:
+
+------------------------------------------------
+GOOD MORNING
+Tuesday, September 1
+
+TODAY
+------------------------------------------------
+
+09:00
+Compiler Construction
+
+11:10
+Web Engineering
+
+02:00
+Machine Learning Lab
+
+------------------------------------------------
+⚠️ URGENT
+------------------------------------------------
+
+Operating Systems Lab Report
+Due Tomorrow
+Estimated: 2 hours
+Status: Not Started
+
+[Start]
+
+------------------------------------------------
+📚 NEXT CLASS
+------------------------------------------------
+
+Machine Learning
+02:00 PM
+
+LAST LECTURE:
+Linear Regression
+
+IMPORTANT:
+Teacher emphasized cost function.
+
+HOMEWORK:
+Implement Linear Regression.
+
+[Quick Review]
+
+------------------------------------------------
+🎯 TODAY'S TOP TASKS
+------------------------------------------------
+
+□ Finish OS Lab Report
+□ Review Compiler Construction
+□ Complete ML homework
+
+------------------------------------------------
+🧠 DON'T FORGET
+------------------------------------------------
+
+• Ask Web Engineering teacher about project
+• Upload ML dataset
+• Review yesterday's Linear Algebra lecture
+
+------------------------------------------------
+📊 THIS WEEK
+------------------------------------------------
+
+Assignments: 4
+Labs: 3
+Exams: 1
+Estimated workload: 12h
+
+------------------------------------------------
+37. SMART "NEXT ACTION"
+--------------------------------------------------
+
+Every task should have a clear next action.
+
+Instead of:
+
+"Machine Learning Assignment"
+
+Show:
+
+"Open notebook and implement Linear Regression."
+
+Instead of:
+
+"OS Lab"
+
+Show:
+
+"Complete process creation section."
+
+The application should help convert large tasks into actionable subtasks.
+
+--------------------------------------------------
+38. DAILY RESET / EVENING REVIEW
+--------------------------------------------------
+
+At the end of the day, provide:
+
+"2-MINUTE DAILY REVIEW"
+
+Ask:
+
+1. What did you complete?
+2. What remains?
+3. Did you attend today's classes?
+4. Did you capture today's lectures?
+5. Did any teacher give new homework?
+6. What must be done tomorrow?
+
+Automatically carry unfinished tasks forward.
+
+Never silently delete unfinished work.
+
+--------------------------------------------------
+39. WEEKLY REVIEW
+--------------------------------------------------
+
+Provide a weekly review:
+
+This week:
+
+Classes attended
+Lectures recorded
+Tasks completed
+Tasks overdue
+Assignments submitted
+Labs completed
+Study hours
+Upcoming deadlines
+
+Then ask:
+
+"What needs attention next week?"
+
+--------------------------------------------------
+40. DATA SAFETY
+--------------------------------------------------
+
+Academic data is important.
+
+Implement:
+
+- automatic local persistence
+- backup/export
+- import
+- confirmation before destructive actions
+- no accidental deletion
+- undo where practical
+
+Allow exporting academic data in a portable format such as JSON.
+
+--------------------------------------------------
+41. ACCESSIBILITY
+--------------------------------------------------
+
+Support:
+
+- keyboard navigation
+- readable typography
+- clear status indicators
+- responsive layout
+- sufficient contrast
+- tooltips where necessary
+
+--------------------------------------------------
+42. SEARCH-FIRST INFORMATION ARCHITECTURE
+--------------------------------------------------
+
+I should never need to remember WHERE I stored something.
+
+If I remember only:
+
+"Teacher talked about FIRST and FOLLOW"
+
+I should search:
+
+FIRST FOLLOW
+
+and find the relevant:
+
+Lecture
+Course
+Homework
+Notes
+Resources
+
+--------------------------------------------------
+43. AI FEATURES — OPTIONAL SECOND PHASE
+--------------------------------------------------
+
+Do NOT make the entire application dependent on AI.
+
+First build a reliable normal application.
+
+After the core system works, optionally add AI features such as:
+
+1. Natural language task creation
+2. Automatic lecture summary
+3. Extract tasks/deadlines from uploaded lecture material
+4. Generate quick lecture review questions
+5. Ask questions about my stored academic notes
+6. Identify upcoming workload
+7. Suggest daily priorities
+8. Generate revision plans
+9. Find related lectures/resources
+
+AI should assist the student, not become a dependency.
+
+--------------------------------------------------
+44. MVP REQUIREMENTS
+--------------------------------------------------
+
+DO NOT build every feature at once.
+
+Build the application in phases.
+
+PHASE 1 — MVP
+
+Must include:
+
+✓ Courses
+✓ Theory/Lab distinction
+✓ Timetable
+✓ Dashboard
+✓ Tasks
+✓ Deadlines
+✓ Reminders
+✓ Lecture records
+✓ Last lecture review
+✓ Quick Add
+✓ Course pages
+✓ Lab tracking
+✓ Search
+✓ Local persistence
+✓ Daily view
+✓ Weekly view
+
+PHASE 2
+
+Add:
+
+✓ Calendar
+✓ Study sessions
+✓ Inbox
+✓ Questions
+✓ Exam preparation
+✓ Weekly review
+✓ Workload analysis
+✓ Backup/export
+
+PHASE 3
+
+Add:
+
+✓ AI task extraction
+✓ AI lecture summaries
+✓ AI review generation
+✓ Intelligent planning
+✓ Natural-language interaction
+
+--------------------------------------------------
+45. DEVELOPMENT PROCESS
+--------------------------------------------------
+
+Do NOT immediately dump thousands of lines of code.
+
+Follow this process:
+
+STEP 1:
+Analyze the requirements.
+
+STEP 2:
+Identify ambiguities and reasonable assumptions.
+
+STEP 3:
+Propose the architecture and technology stack.
+
+STEP 4:
+Design the database/schema.
+
+STEP 5:
+Design the application's information architecture.
+
+STEP 6:
+Design the main screens and user flows.
+
+STEP 7:
+Define MVP.
+
+STEP 8:
+Implement MVP incrementally.
+
+After each major feature:
+
+- explain what was built
+- explain how it works
+- explain how to test it
+- identify what remains
+
+--------------------------------------------------
+46. ACCEPTANCE TESTS
+--------------------------------------------------
+
+The application should pass these scenarios.
+
+SCENARIO 1:
+
+Teacher gives homework in class.
+
+I open Quick Add.
+
+I enter:
+
+"Compiler teacher gave homework on FIRST and FOLLOW due Thursday."
+
+The system creates the task.
+
+--------------------------------------------------
+
+SCENARIO 2:
+
+I finish a lecture.
+
+The application asks me for a short lecture capture.
+
+I record:
+
+Topics
+Important concept
+Teacher emphasis
+Homework
+Question
+
+The lecture is saved.
+
+--------------------------------------------------
+
+SCENARIO 3:
+
+The next Compiler Construction class approaches.
+
+The dashboard automatically shows:
+
+"Last Lecture Review"
+
+with the previous lecture information.
+
+--------------------------------------------------
+
+SCENARIO 4:
+
+An assignment is due tomorrow and I haven't started it.
+
+The dashboard clearly shows:
+
+URGENT
+
+and explains:
+
+Due tomorrow
+Estimated workload
+Current status
+
+--------------------------------------------------
+
+SCENARIO 5:
+
+I ask:
+
+"What am I forgetting?"
+
+The system identifies:
+
+- overdue tasks
+- unrecorded recent lectures
+- upcoming deadlines
+- incomplete labs
+- tasks without deadlines
+
+--------------------------------------------------
+
+SCENARIO 6:
+
+I have 10 courses.
+
+The dashboard remains understandable and does not become cluttered.
+
+--------------------------------------------------
+
+SCENARIO 7:
+
+I close the application and reopen it.
+
+My tasks, lectures, timetable, and progress remain saved.
+
+--------------------------------------------------
+47. IMPORTANT PRODUCT PHILOSOPHY
+--------------------------------------------------
+
+The application is NOT supposed to make me "more productive" by giving me more things to manage.
+
+Its purpose is to reduce mental load.
+
+The application should answer:
+
+"What do I need to know?"
+
+"What do I need to do?"
+
+"What am I forgetting?"
+
+"What was taught last time?"
+
+"What is due next?"
+
+"What should I work on now?"
+
+with minimal effort.
+
+Think of it as:
+
+"External Brain + Academic Planner + Lecture Memory + Assignment Safety System"
+
+rather than:
+
+"Another To-Do App."
+
+--------------------------------------------------
+48. FINAL INSTRUCTION
+--------------------------------------------------
+
+Before writing implementation code:
+
+1. Analyze the complete requirement.
+2. Identify the most important user problems.
+3. Propose the architecture.
+4. Propose the technology stack.
+5. Design the database.
+6. Design the screens.
+7. Define the MVP.
+8. Explain your decisions.
+9. Then begin implementation.
+
+Prioritize reliability and simplicity over feature quantity.
+
+Build something that a university student can realistically use EVERY DAY.
+
+The most important success metric is:
+
+"I no longer miss assignments/labs, and before entering a class I know what was taught in the previous lecture."
