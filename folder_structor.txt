@@ -1,0 +1,31 @@
+studyos/
+├── backend/
+│   ├── main.py                # FastAPI app entry point
+│   ├── database.py            # SQLite connection setup
+│   ├── models.py              # SQLAlchemy table definitions
+│   ├── schemas.py              # Pydantic request/response shapes
+│   ├── routers/
+│   │   ├── courses.py
+│   │   ├── tasks.py
+│   │   ├── lectures.py
+│   │   ├── labs.py
+│   │   ├── timetable.py
+│   │   └── dashboard.py       # "Today" aggregation logic, urgency calc
+│   ├── services/
+│   │   └── urgency.py         # pure logic: date+workload -> urgency label
+│   └── studyos.db             # the actual SQLite file (created at runtime)
+│
+├── frontend/
+│   ├── index.html             # Today dashboard
+│   ├── course.html
+│   ├── tasks.html
+│   ├── timetable.html
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       ├── api.js             # fetch() wrapper functions
+│       ├── dashboard.js
+│       ├── tasks.js
+│       └── quickadd.js
+│
+└── README.md
