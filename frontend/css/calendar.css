@@ -1,0 +1,4 @@
+.calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .4rem; }
+.calendar-cell { min-height: 90px; background: #1f2937; border: 1px solid #334155; border-radius: .45rem; padding: .35rem; }
+.calendar-cell h5 { margin: 0 0 .2rem; font-size: .82rem; color: #cbd5e1; }
+.event-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: .25rem; }

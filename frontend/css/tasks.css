@@ -1,0 +1,4 @@
+.task-item { display: grid; gap: .35rem; }
+.task-meta { display: flex; flex-wrap: wrap; gap: .45rem; color: #94a3b8; font-size: .85rem; }
+.subtasks { margin: .3rem 0 0; padding-left: 1rem; }
+.subtasks li { margin: .2rem 0; }
