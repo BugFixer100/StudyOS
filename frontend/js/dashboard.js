@@ -51,7 +51,7 @@ export function renderTodayView(state) {
         <strong>${c.course_name}</strong> (${c.course_type}) ${c.start_time}-${c.end_time}
         <div class="small">Room: ${c.room || "-"} • Instructor: ${c.instructor || "-"}</div>
         <span class="badge ${badgeClass(c.status)}">${c.status}</span>
-        <button class="action" data-complete-class="${c.course_name}">Mark Class Complete</button>
+        <button class="action" data-complete-class="${c.course_name}" data-course-id="${c.course_id || ""}">Mark Class Complete</button>
       </li>`)
       .join("")
     : "<li>No classes today.</li>";

@@ -50,9 +50,10 @@ export function lectureMatches(lecture, query) {
   return text.includes(query.toLowerCase());
 }
 
-export function lectureCaptureModal(courseName = "Course") {
+export function lectureCaptureModal(courseName = "Course", courseId = "") {
   const today = new Date().toISOString().slice(0, 10);
   return `<form id="lecture-capture-inline"><h3>WHAT DID YOU LEARN? (${courseName})</h3>
+    <input type="hidden" name="course_id" value="${courseId}" />
     <label>Date<input type="date" name="date" value="${today}" required /></label>
     <label>Topics covered<textarea name="topics_covered"></textarea></label>
     <label>Important concepts<textarea name="key_concepts"></textarea></label>

@@ -43,13 +43,14 @@ export function renderWeeklyView(state) {
 }
 
 export function renderCoursesView(state) {
+  const courseTypes = ["theory", "lab"];
   const firstCourseId = state.selectedCourseId || state.courses[0]?.id;
   const selectedCourse = state.courses.find((c) => c.id === firstCourseId);
 
   const tabs = state.courses.map((c) => `<button data-course-tab="${c.id}" ${c.id === firstCourseId ? 'class="active"' : ""}>${c.name}</button>`).join("");
 
   if (!selectedCourse) {
-    return `<div class="card"><h3>Courses</h3><p>No courses found.</p></div>`;
+    return `<div class="grid cols-2"><div class="card"><h3>Courses</h3><p>No courses found yet. Add your first course to unlock tasks, lectures, and timetable entries.</p></div>${courseForm(courseTypes)}</div>`;
   }
 
   const tasks = state.tasks.filter((t) => t.course_id === selectedCourse.id);
@@ -58,7 +59,8 @@ export function renderCoursesView(state) {
   const health = buildCourseHealth(state, selectedCourse);
 
   return `<div class="grid cols-2">
-    <div class="card" style="grid-column:1/-1"><h3>Course Pages</h3><div class="course-tabs">${tabs}</div></div>
+    <div class="card" style="grid-column:1/-1"><div class="today-header"><h3>Course Pages</h3><span class="small">${state.courses.length} course${state.courses.length === 1 ? "" : "s"}</span></div><div class="course-tabs">${tabs}</div></div>
+    ${courseForm(courseTypes)}
     <div class="card"><h4>Overview</h4><p><strong>${selectedCourse.name}</strong> (${selectedCourse.type})</p><p>Instructor: ${selectedCourse.instructor || "-"}</p></div>
     <div class="card"><h4>Progress</h4><div>Task Completion <div class="progress-track"><span style="width:${health.taskCompletion}%"></span></div></div></div>
     <div class="card"><h4>Timetable</h4><ul class="clean">${state.timetable.filter((s) => s.course_id === selectedCourse.id).map((s) => `<li>${s.day_of_week} ${s.start_time}-${s.end_time} ${s.room || ""}</li>`).join("") || "<li>No timetable slots</li>"}</ul></div>
@@ -67,4 +69,14 @@ export function renderCoursesView(state) {
     <div class="card"><h4>Labs</h4><ul class="clean">${labs.map((l) => `<li>Lab ${l.lab_number || "-"}: ${l.experiment_title} (${l.pipeline_stage})</li>`).join("") || "<li>No labs</li>"}</ul></div>
     <div class="card"><h4>Notes / Resources / Exams</h4><div class="small">Notes and resources are managed via Academic Inbox and Quick Add. Exam prep checklists are in Study Sessions page.</div></div>
   </div>`;
+}
+
+function courseForm(courseTypes) {
+  return `<div class="card"><h4>Add Course</h4><form id="course-form">
+    <label>Name<input name="name" required placeholder="e.g. Compiler Construction" /></label>
+    <label>Type<select name="type">${courseTypes.map((type) => `<option value="${type}">${type[0].toUpperCase()}${type.slice(1)}</option>`).join("")}</select></label>
+    <label>Instructor<input name="instructor" placeholder="Optional" /></label>
+    <label>Color tag<input name="color_tag" type="color" value="#2f6fed" /></label>
+    <button class="action primary" type="submit">Add Course</button>
+  </form></div>`;
 }

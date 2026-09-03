@@ -132,6 +132,7 @@ def build_today_dashboard(db: Session) -> Dict[str, Any]:
         classes_today.append(
             {
                 "id": slot.id,
+                "course_id": slot.course_id,
                 "course_name": course.name,
                 "course_type": course.type,
                 "start_time": _serialize_time(slot.start_time),

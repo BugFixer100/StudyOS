@@ -193,8 +193,8 @@ function openQuickAdd() {
   quickAddModal.showModal();
 }
 
-function openLectureCapture(courseName) {
-  lectureModal.innerHTML = lectureCaptureModal(courseName);
+function openLectureCapture(courseName, courseId) {
+  lectureModal.innerHTML = lectureCaptureModal(courseName, courseId);
   lectureModal.showModal();
 }
 
@@ -231,7 +231,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (target.matches("[data-complete-class]")) {
-    openLectureCapture(target.dataset.completeClass);
+    openLectureCapture(target.dataset.completeClass, target.dataset.courseId);
   }
 
   if (target.matches("[data-mark-reviewed]")) {
@@ -248,6 +248,7 @@ document.addEventListener("click", async (event) => {
 
   if (target.matches("[data-task-submit]")) {
     const id = Number(target.dataset.taskSubmit);
+    if (!confirm("Confirm that this task has been submitted?")) return;
     await api.submitTask(id, { method: "Frontend Confirmed", proof_link: "" });
     await refreshData();
   }
@@ -301,6 +302,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (target.matches("[data-lab-submit]")) {
+    if (!confirm("Confirm that this lab has been submitted?")) return;
     await api.submitLab(Number(target.dataset.labSubmit), { method: "Frontend Confirmed", proof_link: "" });
     await refreshData();
   }
@@ -423,6 +425,12 @@ document.addEventListener("submit", async (event) => {
       await refreshData();
     }
 
+    if (form.id === "course-form") {
+      await api.createCourse(toPayload(form));
+      form.reset();
+      await refreshData();
+    }
+
     if (form.id === "lab-form") {
       await api.createLab(toPayload(form));
       form.reset();
@@ -472,10 +480,7 @@ document.addEventListener("submit", async (event) => {
 
     if (form.id === "lecture-capture-inline") {
       const payload = toPayload(form);
-      const nextCourseName = state.dashboard?.next_class?.course_name;
-      const course = state.courses.find((c) => c.name === nextCourseName) || state.courses[0];
-      if (course) {
-        payload.course_id = course.id;
+      if (payload.course_id) {
         await api.createLecture(payload);
       }
       lectureModal.close();
