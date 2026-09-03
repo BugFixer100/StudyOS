@@ -1,0 +1,5 @@
+.course-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.course-tabs button { border: 1px solid #334155; background: #0f172a; color: #e5e7eb; border-radius: .4rem; padding: .35rem .6rem; }
+.course-health { display: grid; gap: .3rem; }
+.progress-track { height: 10px; background: #334155; border-radius: 8px; overflow: hidden; }
+.progress-track > span { display: block; height: 100%; background: #22c55e; }

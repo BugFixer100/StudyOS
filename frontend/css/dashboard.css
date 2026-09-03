@@ -1,0 +1,4 @@
+.today-header { display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
+.urgency-bar { height: 8px; border-radius: 6px; background: #334155; overflow: hidden; }
+.urgency-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444); }
+.danger-list li { border-left: 3px solid #ef4444; padding-left: .5rem; }
