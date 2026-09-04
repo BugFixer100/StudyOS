@@ -23,7 +23,8 @@ export function buildAcademicCheck(state) {
   const noDeadline = state.tasks.filter((t) => !t.due_date).length;
   if (noDeadline) findings.push(`${noDeadline} task(s) have no deadline.`);
 
-  const overdue = state.tasks.filter((t) => t.due_date && new Date(t.due_date) < today && t.status !== "Completed");
+  // FIX: Exclude both "Completed" and "Submitted" from overdue findings
+  const overdue = state.tasks.filter((t) => t.due_date && new Date(t.due_date) < today && t.status !== "Completed" && t.status !== "Submitted");
   if (overdue.length) findings.push(`${overdue.length} task(s) are overdue.`);
 
   const noLectureSummary = state.lectures.filter((l) => !l.is_captured).length;
@@ -40,10 +41,14 @@ export function buildAcademicCheck(state) {
 
 export function renderTodayView(state) {
   const classes = state.dashboard?.classes_today || [];
-  const urgentItems = state.dashboard?.urgent_items || [];
   const topActions = state.dashboard?.top_actions || [];
   const nextClass = state.dashboard?.next_class;
   const previousLecture = state.previousLecture;
+
+  // FIX: Filter out "Completed" and "Submitted" tasks from the urgent items array
+  const urgentItems = (state.dashboard?.urgent_items || []).filter(
+    (t) => t.status !== "Completed" && t.status !== "Submitted"
+  );
 
   const classRows = classes.length
     ? classes
