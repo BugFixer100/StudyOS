@@ -38,6 +38,27 @@ def _class_status(start_time: Optional[time], end_time: Optional[time]) -> str:
     return "Completed"
 
 
+def _dashboard_priority_rank(item: Dict[str, Any]) -> tuple:
+    """
+    Ranks urgent items for display order, matching the dashboard priority
+    order from the product spec: things due today first, THEN overdue
+    work, THEN upcoming items soonest-first.
+
+    Without this, sorting by is_overdue as the primary key would put
+    ALL overdue items after ALL non-overdue items - meaning a task
+    overdue by 5 days would rank below a task simply due in 7 days,
+    which contradicts the spec's explicit priority order.
+    """
+    days_left = item["urgency"]["days_left"]
+    is_overdue = item["urgency"]["is_overdue"]
+
+    if days_left == 0:
+        return (0, 0)
+    if is_overdue:
+        return (1, days_left)  # more overdue (more negative) sorts first
+    return (2, days_left)  # future, soonest first
+
+
 def _get_course_name(db: Session, course_id: int) -> Optional[str]:
     course = db.query(models.Course).filter(models.Course.id == course_id).first()
     return course.name if course else None
@@ -158,14 +179,7 @@ def build_today_dashboard(db: Session) -> Dict[str, Any]:
         if urgency["days_left"] <= 7 or urgency["is_overdue"]:
             urgent_items.append(item)
 
-    urgent_items.sort(
-        key=lambda item: (
-            item["urgency"]["is_overdue"],
-            item["urgency"]["days_left"] if item["urgency"]["days_left"] is not None else 999,
-            item["urgency"]["score"],
-        ),
-        reverse=False,
-    )
+    urgent_items.sort(key=_dashboard_priority_rank)
 
     top_actions = []
     for task in urgent_tasks:

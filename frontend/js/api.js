@@ -25,6 +25,10 @@ export const api = {
   deleteTask: (id) => request(`/api/tasks/${id}`, { method: "DELETE" }),
   submitTask: (id, payload) => request(`/api/tasks/${id}/submit`, { method: "POST", headers: jsonHeaders, body: JSON.stringify(payload) }),
 
+  addSubtask: (taskId, payload) => request(`/api/tasks/${taskId}/subtasks`, { method: "POST", headers: jsonHeaders, body: JSON.stringify(payload) }),
+  updateSubtask: (subtaskId, payload) => request(`/api/tasks/subtasks/${subtaskId}`, { method: "PUT", headers: jsonHeaders, body: JSON.stringify(payload) }),
+  deleteSubtask: (subtaskId) => request(`/api/tasks/subtasks/${subtaskId}`, { method: "DELETE" }),
+
   listLectures: () => request("/api/lectures/"),
   createLecture: (payload) => request("/api/lectures/", { method: "POST", headers: jsonHeaders, body: JSON.stringify(payload) }),
   updateLecture: (id, payload) => request(`/api/lectures/${id}`, { method: "PUT", headers: jsonHeaders, body: JSON.stringify(payload) }),

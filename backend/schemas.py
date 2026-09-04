@@ -18,7 +18,7 @@ Naming convention used throughout:
 """
 
 from datetime import date as date_, time as time_, datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 from pydantic import BaseModel, ConfigDict
 
@@ -186,6 +186,14 @@ class TaskRead(BaseModel):
     submission_method: Optional[str] = None
     submission_link: Optional[str] = None
     notes: Optional[str] = None
+    # Forward reference (as a string) because SubtaskRead is defined
+    # further down in this file. TaskRead.model_rebuild() below the
+    # SubtaskRead class definition resolves it once SubtaskRead exists.
+    subtasks: List["SubtaskRead"] = []
+    # Computed at request time by routers/tasks.py using
+    # services/urgency.py - never stored in the database, since
+    # urgency must always reflect "days left as of right now."
+    urgency: Optional[Dict[str, Any]] = None
 
 
 # ---------- Subtask ----------
@@ -207,6 +215,10 @@ class SubtaskRead(BaseModel):
     task_id: int
     title: str
     is_done: bool
+
+
+# Now that SubtaskRead exists, resolve TaskRead's forward reference to it.
+TaskRead.model_rebuild()
 
 
 # ---------- Lab ----------

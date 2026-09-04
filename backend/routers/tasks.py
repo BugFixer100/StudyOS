@@ -23,8 +23,25 @@ from sqlalchemy.orm import Session
 from database import get_db
 import models
 import schemas
+from services.urgency import compute_urgency
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
+
+
+def _attach_urgency(task: models.Task) -> models.Task:
+    """
+    Computes urgency fresh (never stored) and attaches it as a plain
+    attribute so Pydantic's from_attributes picks it up when building
+    the TaskRead response. Used everywhere a Task is returned so the
+    frontend never has to calculate urgency/danger-zone itself.
+    """
+    task.urgency = compute_urgency(
+        due_date=task.due_date,
+        estimated_minutes=task.estimated_minutes,
+        priority=task.priority,
+        status=task.status,
+    )
+    return task
 
 
 @router.get("/", response_model=List[schemas.TaskRead])
@@ -46,7 +63,8 @@ def list_tasks(
         query = query.filter(models.Task.course_id == course_id)
     if status is not None:
         query = query.filter(models.Task.status == status)
-    return query.order_by(models.Task.due_date.asc().nulls_last()).all()
+    tasks = query.order_by(models.Task.due_date.asc().nulls_last()).all()
+    return [_attach_urgency(t) for t in tasks]
 
 
 @router.get("/{task_id}", response_model=schemas.TaskRead)
@@ -54,7 +72,7 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return task
+    return _attach_urgency(task)
 
 
 @router.post("/", response_model=schemas.TaskRead, status_code=201)
@@ -68,7 +86,7 @@ def create_task(payload: schemas.TaskCreate, db: Session = Depends(get_db)):
     db.add(task)
     db.commit()
     db.refresh(task)
-    return task
+    return _attach_urgency(task)
 
 
 @router.put("/{task_id}", response_model=schemas.TaskRead)
@@ -82,7 +100,7 @@ def update_task(task_id: int, payload: schemas.TaskUpdate, db: Session = Depends
 
     db.commit()
     db.refresh(task)
-    return task
+    return _attach_urgency(task)
 
 
 @router.delete("/{task_id}", status_code=204)

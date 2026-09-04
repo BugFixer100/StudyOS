@@ -1,12 +1,12 @@
-import { api } from "./api.js";
-import { renderTodayView, buildAcademicCheck } from "./dashboard.js";
-import { renderTasksView } from "./tasks.js";
-import { renderCoursesView, renderWeeklyView } from "./courses.js";
-import { renderLecturesView, lectureCaptureModal, lectureReviewModal, lectureMatches } from "./lectures.js";
-import { renderLabsView } from "./labs.js";
-import { renderCalendarView } from "./calendar.js";
-import { renderTimetableView } from "./timetable.js";
-import { globalSearch, renderSearchView } from "./search.js";
+import { api } from "./api.js?v=studyos-course-workspace-1";
+import { renderTodayView, buildAcademicCheck } from "./dashboard.js?v=studyos-course-workspace-1";
+import { renderTasksView } from "./tasks.js?v=studyos-course-workspace-1";
+import { renderCoursesView, renderWeeklyView } from "./courses.js?v=studyos-course-workspace-1";
+import { renderLecturesView, lectureCaptureModal, lectureReviewModal, lectureMatches } from "./lectures.js?v=studyos-course-workspace-1";
+import { renderLabsView } from "./labs.js?v=studyos-course-workspace-1";
+import { renderCalendarView } from "./calendar.js?v=studyos-course-workspace-1";
+import { renderTimetableView } from "./timetable.js?v=studyos-course-workspace-1";
+import { globalSearch, renderSearchView } from "./search.js?v=studyos-course-workspace-1";
 
 const statusEl = document.getElementById("status");
 const rootEl = document.getElementById("view-root");
@@ -14,9 +14,10 @@ const titleEl = document.getElementById("view-title");
 const lectureModal = document.getElementById("lecture-capture-modal");
 const reviewModal = document.getElementById("lecture-review-modal");
 const quickAddModal = document.getElementById("quick-add-modal");
+const requestedView = new URLSearchParams(window.location.search).get("view");
 
 const state = {
-  currentView: "today",
+  currentView: requestedView || "today",
   courses: [],
   tasks: [],
   lectures: [],
@@ -25,10 +26,10 @@ const state = {
   dashboard: null,
   previousLecture: null,
   selectedCourseId: null,
+  coursePanel: "overview",
   courseName: {},
   prepChecklist: ["Review previous lecture", "Revise key concepts", "Carry pending questions"],
   prepChecked: [],
-  localSubtasks: {},
   localAttachments: { tasks: {}, lectures: {}, courses: {}, labs: {} },
   inbox: [],
   questionsByCourse: {},
@@ -46,13 +47,13 @@ function loadLocal() {
 function saveLocal() {
   localStorage.setItem("studyos_local", JSON.stringify({
     prepChecked: state.prepChecked,
-    localSubtasks: state.localSubtasks,
     localAttachments: state.localAttachments,
     inbox: state.inbox,
     questionsByCourse: state.questionsByCourse,
     examPrepByCourse: state.examPrepByCourse,
     studySessions: state.studySessions,
     activeSession: state.activeSession,
+    coursePanel: state.coursePanel,
   }));
 }
 
@@ -155,6 +156,18 @@ function render() {
     inbox: "Academic Inbox",
     study: "Study Sessions & Exams",
   };
+  const pageInfo = {
+    weekly: ["📊", "Weekly overview", "See your classes, deadlines, and course momentum in one place."],
+    tasks: ["☑️", "Task management", "Capture work once, then keep deadlines and progress under control."],
+    courses: ["📚", "Course pages", "Your classes, lecture memory, assignments, and timetable by course."],
+    lectures: ["🧠", "Lecture memory", "Save the few details that will make the next class easier."],
+    labs: ["🧪", "Lab workspace", "Follow every experiment from the task brief to viva."],
+    timetable: ["🕐", "Weekly timetable", "Plan your class schedule and keep rooms close at hand."],
+    calendar: ["🗓️", "Calendar", "A calm view of upcoming classes, deadlines, labs, and study sessions."],
+    search: ["⌕", "Global search", "Find a lecture, task, course, lab, or note in seconds."],
+    inbox: ["📥", "Academic inbox", "Quickly capture loose reminders before they fall through the cracks."],
+    study: ["🎯", "Study sessions & exams", "Track focused study time and turn exam preparation into small steps."],
+  };
   titleEl.textContent = titles[state.currentView] || "StudyOS";
 
   const viewMarkup = {
@@ -171,7 +184,11 @@ function render() {
     study: renderStudyView(),
   };
 
-  rootEl.innerHTML = viewMarkup[state.currentView] || "<p>Unknown view</p>";
+  const markup = viewMarkup[state.currentView] || "<p>Unknown view</p>";
+  const info = pageInfo[state.currentView];
+  rootEl.innerHTML = state.currentView === "today"
+    ? markup
+    : `<div class="page-view"><header class="view-header"><div class="view-icon">${info?.[0] || "✦"}</div><div><p class="eyebrow">StudyOS workspace</p><h1>${info?.[1] || titleEl.textContent}</h1><p>${info?.[2] || "Keep your academic life organised."}</p></div></header>${markup}</div>`;
   document.querySelectorAll(".sidebar button[data-view]").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.view === state.currentView);
   });
@@ -205,9 +222,18 @@ function openLectureReview() {
 
 document.addEventListener("click", async (event) => {
   const target = event.target;
+  const viewButton = target.closest("button[data-view]");
+  const courseOpener = target.closest("button[data-open-course]");
 
-  if (target.matches(".sidebar button[data-view]")) {
-    state.currentView = target.dataset.view;
+  if (viewButton) {
+    state.currentView = viewButton.dataset.view;
+    render();
+  }
+
+  if (courseOpener) {
+    state.selectedCourseId = Number(courseOpener.dataset.openCourse) || state.selectedCourseId;
+    state.coursePanel = courseOpener.dataset.openPanel || "overview";
+    state.currentView = "courses";
     render();
   }
 
@@ -267,18 +293,22 @@ document.addEventListener("click", async (event) => {
     const taskId = Number(target.dataset.subtaskAdd);
     const input = rootEl.querySelector(`[data-subtask-input='${taskId}']`);
     if (input?.value?.trim()) {
-      state.localSubtasks[taskId] = [...(state.localSubtasks[taskId] || []), { title: input.value.trim(), done: false }];
+      await api.addSubtask(taskId, { task_id: taskId, title: input.value.trim() });
       input.value = "";
-      saveLocal();
-      render();
+      await refreshData();
     }
   }
 
   if (target.matches("[data-subtask-toggle]")) {
-    const [taskId, idx] = target.dataset.subtaskToggle.split(":").map(Number);
-    const subtasks = state.localSubtasks[taskId] || [];
-    subtasks[idx].done = target.checked;
-    saveLocal();
+    const subtaskId = Number(target.dataset.subtaskToggle);
+    await api.updateSubtask(subtaskId, { is_done: target.checked });
+    await refreshData();
+  }
+
+  if (target.matches("[data-subtask-delete]")) {
+    const subtaskId = Number(target.dataset.subtaskDelete);
+    await api.deleteSubtask(subtaskId);
+    await refreshData();
   }
 
   if (target.matches("[data-lecture-delete]")) {
@@ -314,6 +344,12 @@ document.addEventListener("click", async (event) => {
 
   if (target.matches("[data-course-tab]")) {
     state.selectedCourseId = Number(target.dataset.courseTab);
+    state.coursePanel = "overview";
+    render();
+  }
+
+  if (target.matches("[data-course-panel]")) {
+    state.coursePanel = target.dataset.coursePanel;
     render();
   }
 
@@ -419,7 +455,19 @@ document.addEventListener("submit", async (event) => {
       await refreshData();
     }
 
+    if (form.id === "course-task-form") {
+      await api.createTask({ ...toPayload(form), status: "Not Started", progress_percent: 0 });
+      form.reset();
+      await refreshData();
+    }
+
     if (form.id === "lecture-form") {
+      await api.createLecture(toPayload(form));
+      form.reset();
+      await refreshData();
+    }
+
+    if (form.id === "course-lecture-form") {
       await api.createLecture(toPayload(form));
       form.reset();
       await refreshData();
@@ -437,7 +485,19 @@ document.addEventListener("submit", async (event) => {
       await refreshData();
     }
 
+    if (form.id === "course-lab-form") {
+      await api.createLab(toPayload(form));
+      form.reset();
+      await refreshData();
+    }
+
     if (form.id === "slot-form") {
+      await api.createTimetableSlot(toPayload(form));
+      form.reset();
+      await refreshData();
+    }
+
+    if (form.id === "course-slot-form") {
       await api.createTimetableSlot(toPayload(form));
       form.reset();
       await refreshData();

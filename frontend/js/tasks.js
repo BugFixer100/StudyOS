@@ -2,26 +2,25 @@ const TASK_TYPES = ["Homework", "Assignment", "Lab Assignment", "Lab Report", "P
 const TASK_STATUS = ["Not Started", "In Progress", "Blocked", "Submitted", "Completed"];
 const PRIORITY = ["Low", "Medium", "High", "Urgent"];
 
-export function dangerZoneTasks(tasks) {
-  return tasks.filter((task) => {
-    const daysLeft = task.due_date ? Math.ceil((new Date(task.due_date) - new Date()) / 86400000) : null;
-    const highRiskDeadline = daysLeft !== null && daysLeft <= 2;
-    const overdue = daysLeft !== null && daysLeft < 0;
-    const heavyWork = (task.estimated_minutes || 0) >= 180;
-    const notStarted = task.status === "Not Started";
-    const highPriority = task.priority === "High" || task.priority === "Urgent";
-    return overdue || (highRiskDeadline && (heavyWork || notStarted || highPriority));
-  });
+// Maps the backend's own urgency label (task.urgency.label, computed in
+// services/urgency.py) to a badge CSS class. This does NOT decide what
+// counts as "Overdue" vs "Critical" - it only picks a color for a label
+// the backend already computed, so there's exactly one place that owns
+// those thresholds.
+function urgencyBadgeClass(label) {
+  const key = (label || "").toLowerCase();
+  if (key === "overdue") return "overdue";
+  if (key === "critical" || key === "high") return "urgent";
+  if (key === "completed") return "completed";
+  return "upcoming"; // Medium, Low, No deadline
 }
 
-function urgencyLabel(task) {
-  if (!task.due_date) return "No deadline";
-  const days = Math.ceil((new Date(task.due_date) - new Date()) / 86400000);
-  if (days < 0) return "OVERDUE";
-  if (days === 0) return "DUE TODAY";
-  if (days <= 2) return "Urgent";
-  if (days <= 6) return "Plan Soon";
-  return "Upcoming";
+function urgencyText(urgency) {
+  if (!urgency) return "No urgency";
+  const days = urgency.days_left;
+  if (days === null || days === undefined) return urgency.label;
+  const dayText = urgency.is_overdue ? `${Math.abs(days)}d overdue` : days === 0 ? "today" : `${days}d`;
+  return `${urgency.label} (${dayText})`;
 }
 
 export function renderTasksView(state) {
@@ -30,14 +29,14 @@ export function renderTasksView(state) {
     ? state.tasks.map((t) => `<li class="task-item">
         <div class="row">
           <strong>${t.title}</strong>
-          <span class="badge ${urgencyLabel(t).toLowerCase().replace(/\s/g,"")}">${urgencyLabel(t)}</span>
+          <span class="badge ${urgencyBadgeClass(t.urgency?.label)}">${urgencyText(t.urgency)}</span>
         </div>
         <div class="task-meta">Type: ${t.task_type} • Priority: ${t.priority} • Status: ${t.status} • Progress: ${t.progress_percent}%</div>
         <div class="small">Due: ${t.due_date || "-"} ${t.due_time || ""} • Estimate: ${t.estimated_minutes || 0} min</div>
         <div class="small">Submission: ${t.submission_method || "-"} ${t.submission_link ? `• <a href="${t.submission_link}" target="_blank">Link</a>` : ""}</div>
         <details><summary>Notes / Subtasks / Attachments</summary>
           <p>${t.notes || "No notes"}</p>
-          <ul class="subtasks">${(state.localSubtasks[t.id] || []).map((s, idx) => `<li><label><input type="checkbox" data-subtask-toggle="${t.id}:${idx}" ${s.done ? "checked" : ""}/> ${s.title}</label></li>`).join("") || "<li>No subtasks</li>"}</ul>
+          <ul class="subtasks">${(t.subtasks || []).map((s) => `<li><label><input type="checkbox" data-subtask-toggle="${s.id}" ${s.is_done ? "checked" : ""}/> ${s.title}</label> <button class="action danger" data-subtask-delete="${s.id}">x</button></li>`).join("") || "<li>No subtasks</li>"}</ul>
           <div class="row">
             <input type="text" data-subtask-input="${t.id}" placeholder="Add subtask" />
             <button class="action" data-subtask-add="${t.id}">Add</button>
@@ -52,7 +51,8 @@ export function renderTasksView(state) {
       </li>`).join("")
     : "<li>No tasks available.</li>";
 
-  const dangerHtml = dangerZoneTasks(state.tasks).slice(0, 5).map((t) => `<li>${t.title} (${urgencyLabel(t)})</li>`).join("") || "<li>No danger-zone tasks.</li>";
+  const dangerTasks = state.tasks.filter((t) => t.urgency?.danger_zone);
+  const dangerHtml = dangerTasks.slice(0, 5).map((t) => `<li>${t.title} (${t.urgency.label})</li>`).join("") || "<li>No danger-zone tasks.</li>";
 
   return `
     <div class="grid cols-2">

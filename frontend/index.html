@@ -4,28 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StudyOS</title>
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="stylesheet" href="/css/dashboard.css" />
-  <link rel="stylesheet" href="/css/tasks.css" />
-  <link rel="stylesheet" href="/css/courses.css" />
-  <link rel="stylesheet" href="/css/calendar.css" />
+  <link rel="stylesheet" href="/css/style.css?v=studyos-course-workspace-1" />
+  <link rel="stylesheet" href="/css/dashboard.css?v=studyos-course-workspace-1" />
+  <link rel="stylesheet" href="/css/tasks.css?v=studyos-course-workspace-1" />
+  <link rel="stylesheet" href="/css/courses.css?v=studyos-course-workspace-1" />
+  <link rel="stylesheet" href="/css/calendar.css?v=studyos-course-workspace-1" />
 </head>
 <body>
   <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="#" aria-label="StudyOS home">Study<span>OS</span></a>
+      <div class="header-actions">
+        <button class="icon-button notification-button" aria-label="Notifications">♧<span>3</span></button>
+        <button class="icon-button" aria-label="Search" data-view="search">⌕</button>
+        <span class="header-divider"></span>
+        <button class="profile-button" aria-label="Student profile">Fida <span class="avatar">F</span></button>
+      </div>
+    </header>
     <aside class="sidebar">
-      <h1>StudyOS</h1>
-      <button data-view="today">Today</button>
-      <button data-view="weekly">Weekly</button>
-      <button data-view="tasks">Tasks</button>
-      <button data-view="courses">Courses</button>
-      <button data-view="lectures">Lectures</button>
-      <button data-view="labs">Labs</button>
-      <button data-view="timetable">Timetable</button>
-      <button data-view="calendar">Calendar</button>
-      <button data-view="search">Search</button>
-      <button data-view="inbox">Inbox</button>
-      <button data-view="study">Study Sessions</button>
-      <button id="quick-add-open" class="primary">+ Quick Add</button>
+      <nav aria-label="Main navigation">
+        <button data-view="today"><span>🏠</span>Today</button>
+        <button data-view="calendar"><span>🗓️</span>Calendar</button>
+        <button data-view="courses"><span>📚</span>Courses</button>
+        <button data-view="lectures"><span>🧠</span>Lectures</button>
+        <button data-view="labs"><span>🧪</span>Labs</button>
+        <button data-view="timetable"><span>🕐</span>Timetable</button>
+        <button data-view="inbox"><span>📥</span>Inbox</button>
+        <button data-view="study"><span>🎯</span>Study</button>
+        <button data-view="weekly"><span>📊</span>Weekly</button>
+      </nav>
+      <button id="quick-add-open" class="primary">＋ Quick Add</button>
     </aside>
 
     <main class="content">
@@ -34,7 +42,7 @@
           <h2 id="view-title">Today</h2>
           <p id="status">Connecting...</p>
         </div>
-        <button id="refresh-btn">Refresh</button>
+        <button id="refresh-btn" aria-label="Refresh data">↻ Refresh</button>
       </header>
       <section id="view-root"></section>
     </main>
@@ -44,6 +52,6 @@
   <dialog id="lecture-review-modal" class="modal"></dialog>
   <dialog id="quick-add-modal" class="modal"></dialog>
 
-  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/app.js?v=studyos-course-workspace-1"></script>
 </body>
 </html>

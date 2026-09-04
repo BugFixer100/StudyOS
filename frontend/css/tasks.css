@@ -1,4 +1,1 @@
-.task-item { display: grid; gap: .35rem; }
-.task-meta { display: flex; flex-wrap: wrap; gap: .45rem; color: #94a3b8; font-size: .85rem; }
-.subtasks { margin: .3rem 0 0; padding-left: 1rem; }
-.subtasks li { margin: .2rem 0; }
+.task-item { display: grid; gap: 6px; padding: 14px 2px !important; }.task-item > .row:first-child { justify-content: space-between; }.task-meta { color: #627080; display: flex; flex-wrap: wrap; font-size: .8rem; gap: 8px; }.task-item details { background: #f8fafc; border: 1px solid #e0e7ed; border-radius: 8px; color: #53616e; font-size: .84rem; padding: 8px 10px; }.task-item summary { color: #356a9f; cursor: pointer; font-weight: 700; }.subtasks { margin: 8px 0 0; padding-left: 18px; }.subtasks li { margin: 5px 0; }.danger-list li { border-left: 3px solid #e67a70; color: #9d3f39; padding-left: 10px; }

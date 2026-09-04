@@ -33,6 +33,7 @@ def compute_urgency(
             "label": "No deadline",
             "days_left": None,
             "is_overdue": False,
+            "danger_zone": False,
         }
 
     today = date.today()
@@ -46,6 +47,7 @@ def compute_urgency(
             "label": "Completed",
             "days_left": days_left,
             "is_overdue": days_left < 0,
+            "danger_zone": False,
         }
 
     safe_days = max(abs(days_left), 1)
@@ -63,9 +65,21 @@ def compute_urgency(
     else:
         label = "Low"
 
+    # Danger Zone: overdue, OR due very soon combined with heavy workload,
+    # not-yet-started status, or high/urgent priority. This is the single
+    # authoritative place this rule is decided - the frontend should only
+    # ever display this flag, never recompute it.
+    is_overdue = days_left < 0
+    high_risk_deadline = days_left <= 2
+    heavy_workload = workload >= 180
+    not_started = (status or "").lower() == "not started"
+    high_priority = (priority or "").lower() in ("high", "urgent")
+    danger_zone = is_overdue or (high_risk_deadline and (heavy_workload or not_started or high_priority))
+
     return {
         "score": round(score, 2),
         "label": label,
         "days_left": days_left,
-        "is_overdue": days_left < 0,
+        "is_overdue": is_overdue,
+        "danger_zone": danger_zone,
     }
