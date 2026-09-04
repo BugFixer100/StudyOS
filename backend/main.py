@@ -1,19 +1,8 @@
 """
 main.py
 
-This is the entry point of the whole backend application.
-Running this file starts a web server that the frontend (and you,
-via the browser) can talk to.
-
-For now this file just proves the skeleton works:
-- FastAPI is running
-- SQLite database file gets created
-- One test route responds
-- The frontend folder is served as static files (so frontend and
-  backend live on the same origin - no CORS issues, as planned)
-
-Routers for courses/tasks/lectures/etc. will be added in later steps
-and plugged in here with app.include_router(...).
+Registers all routers and serves the frontend as static files.
+Added calendar and export routers to feature/calendar-backup branch.
 """
 
 from pathlib import Path
@@ -25,7 +14,7 @@ from sqlalchemy import text
 
 from database import engine, Base, get_db
 import models  # noqa: F401  (imported so its tables get registered with Base)
-from routers import courses, tasks, lectures, labs, timetable, dashboard
+from routers import courses, tasks, lectures, labs, timetable, dashboard, calendar, export
 
 # Create all tables that are defined in models.py, if they don't
 # already exist. Safe to run every time the app starts.
@@ -42,6 +31,9 @@ app.include_router(lectures.router)
 app.include_router(labs.router)
 app.include_router(timetable.router)
 app.include_router(dashboard.router)
+# New Phase 2 routers
+app.include_router(calendar.router)
+app.include_router(export.router)
 
 
 @app.get("/api/health")
