@@ -42,14 +42,6 @@ def list_schedule(
     return query.order_by(models.ClassSchedule.start_time.asc()).all()
 
 
-@router.get("/{schedule_id}", response_model=schemas.ClassScheduleRead)
-def get_schedule_slot(schedule_id: int, db: Session = Depends(get_db)):
-    slot = db.query(models.ClassSchedule).filter(models.ClassSchedule.id == schedule_id).first()
-    if not slot:
-        raise HTTPException(status_code=404, detail="Schedule slot not found")
-    return slot
-
-
 @router.post("/", response_model=schemas.ClassScheduleRead, status_code=201)
 def create_schedule_slot(payload: schemas.ClassScheduleCreate, db: Session = Depends(get_db)):
     if payload.day_of_week not in VALID_DAYS:
@@ -81,6 +73,51 @@ def update_schedule_slot(schedule_id: int, payload: schemas.ClassScheduleUpdate,
 
     db.commit()
     db.refresh(slot)
+    return slot
+
+
+@router.get("/exceptions", response_model=List[schemas.ScheduleExceptionRead])
+def list_schedule_exceptions(
+    schedule_id: Optional[int] = None,
+    exception_date: Optional[str] = None,
+    db: Session = Depends(get_db),
+):
+    query = db.query(models.ScheduleException)
+    if schedule_id is not None:
+        query = query.filter(models.ScheduleException.schedule_id == schedule_id)
+    if exception_date is not None:
+        query = query.filter(models.ScheduleException.exception_date == exception_date)
+    return query.order_by(models.ScheduleException.exception_date.asc()).all()
+
+
+@router.post("/exceptions", response_model=schemas.ScheduleExceptionRead, status_code=201)
+def create_schedule_exception(payload: schemas.ScheduleExceptionCreate, db: Session = Depends(get_db)):
+    slot = db.query(models.ClassSchedule).filter(models.ClassSchedule.id == payload.schedule_id).first()
+    if not slot:
+        raise HTTPException(status_code=404, detail="Schedule slot not found")
+    if not payload.is_cancelled and (payload.start_time is None) != (payload.end_time is None):
+        raise HTTPException(status_code=400, detail="start_time and end_time must be provided together")
+    exception = models.ScheduleException(**payload.model_dump())
+    db.add(exception)
+    db.commit()
+    db.refresh(exception)
+    return exception
+
+
+@router.delete("/exceptions/{exception_id}", status_code=204)
+def delete_schedule_exception(exception_id: int, db: Session = Depends(get_db)):
+    exception = db.query(models.ScheduleException).filter(models.ScheduleException.id == exception_id).first()
+    if not exception:
+        raise HTTPException(status_code=404, detail="Schedule exception not found")
+    db.delete(exception)
+    db.commit()
+
+
+@router.get("/{schedule_id}", response_model=schemas.ClassScheduleRead)
+def get_schedule_slot(schedule_id: int, db: Session = Depends(get_db)):
+    slot = db.query(models.ClassSchedule).filter(models.ClassSchedule.id == schedule_id).first()
+    if not slot:
+        raise HTTPException(status_code=404, detail="Schedule slot not found")
     return slot
 
 

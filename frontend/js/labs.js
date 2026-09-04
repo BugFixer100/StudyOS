@@ -6,7 +6,7 @@ export function renderLabsView(state) {
     ? state.labs.map((lab) => {
       const stageIdx = Math.max(0, STAGES.indexOf(lab.pipeline_stage));
       const percent = Math.round((stageIdx / (STAGES.length - 1)) * 100);
-      return `<li>
+      return `<li data-record-id="${lab.id}">
         <strong>Lab ${lab.lab_number || "-"}</strong> • ${state.courseName[lab.course_id] || "Course"} • ${lab.experiment_title}
         <div class="small">Date: ${lab.date || "-"} • Due: ${lab.due_date || "-"} • Status: ${lab.status}</div>
         <div class="small">Pipeline: ${lab.pipeline_stage}</div>

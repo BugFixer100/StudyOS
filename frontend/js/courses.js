@@ -1,3 +1,5 @@
+import { formatTime } from "./time.js?v=studyos-course-workspace-1";
+
 function pct(value, total) {
   if (!total) return 0;
   return Math.min(100, Math.round((value / total) * 100));
@@ -26,17 +28,16 @@ export function renderWeeklyView(state) {
   const dayCards = days.map((day) => {
     const classes = state.timetable.filter((s) => s.day_of_week === day);
     const dueTasks = state.tasks.filter((t) => t.due_date && new Date(t.due_date).toLocaleDateString("en-US", { weekday: "long" }) === day);
-    return `<div class="card"><h4>${day}</h4><div class="small">Classes: ${classes.length} • Deadlines: ${dueTasks.length}</div><ul class="clean">${classes.map((s) => `<li>${state.courseName[s.course_id] || "Course"} ${s.start_time}-${s.end_time}</li>`).join("") || "<li>No classes</li>"}</ul></div>`;
+    return `<div class="card"><h4>${day}</h4><div class="small">Classes: ${classes.length} • Deadlines: ${dueTasks.length}</div><ul class="clean">${classes.map((s) => `<li>${state.courseName[s.course_id] || "Course"} ${formatTime(s.start_time)}-${formatTime(s.end_time)}</li>`).join("") || "<li>No classes</li>"}</ul></div>`;
   }).join("");
 
   const healthCards = state.courses.map((course) => {
     const health = buildCourseHealth(state, course);
-    return `<div class="card"><h4>${course.name}</h4><div class="course-health">
-      <div>Task Completion <div class="progress-track"><span style="width:${health.taskCompletion}%"></span></div></div>
-      <div>Lecture Review <div class="progress-track"><span style="width:${health.lectureReview}%"></span></div></div>
-      <div>Activity <div class="progress-track"><span style="width:${health.activity}%"></span></div></div>
-      <div>Deadline Stability <div class="progress-track"><span style="width:${health.overduePressure}%"></span></div></div>
-    </div></div>`;
+    const overall = Math.round((health.taskCompletion + health.lectureReview + health.activity + health.overduePressure) / 4);
+    const status = overall >= 80 ? "On track" : overall >= 55 ? "Needs attention" : "At risk";
+    const statusClass = overall >= 80 ? "on-track" : overall >= 55 ? "attention" : "at-risk";
+    const metrics = [["Task completion", health.taskCompletion], ["Lecture review", health.lectureReview], ["Activity", health.activity], ["Deadline stability", health.overduePressure]];
+    return `<article class="course-health-card ${statusClass}"><header><div><span class="course-type">${course.type}</span><h4>${course.name}</h4></div><div class="course-score"><strong>${overall}%</strong><span>${status}</span></div></header><div class="course-health">${metrics.map(([label, value]) => `<div class="health-metric"><div class="health-label"><span>${label}</span><strong>${value}%</strong></div><div class="progress-track" role="progressbar" aria-label="${course.name} ${label}" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100"><span style="width:${value}%"></span></div></div>`).join("")}</div></article>`;
   }).join("") || "<p>No courses yet.</p>";
 
   return `<div class="grid cols-2"><div class="card" style="grid-column:1/-1"><h3>Weekly Dashboard</h3><div class="grid cols-3">${dayCards}</div></div><div class="card" style="grid-column:1/-1"><h3>Course Health</h3><div class="grid cols-3">${healthCards}</div></div></div>`;
@@ -82,7 +83,7 @@ function renderCoursePanel(panel, data) {
   </div>`;
   if (panel === "lectures") return `<div class="course-panel two-column-panel"><div class="card"><h3>Capture a lecture</h3><p class="small">A short record is enough—keep the important details for next time.</p>${courseLectureForm(course)}</div><div class="card"><h3>${course.name} lecture memory</h3><ul class="clean course-record-list">${lectures.map((l) => `<li><strong>${l.date}</strong><div>${l.topics_covered || "No topics recorded"}</div><div class="small">Teacher emphasis: ${l.teacher_emphasis || "-"}</div><div class="row"><button class="action" data-lecture-edit="${l.id}">Edit</button><button class="action danger" data-lecture-delete="${l.id}">Delete</button></div></li>`).join("") || "<li class='empty-state'>No lectures saved for this course yet.</li>"}</ul></div></div>`;
   if (panel === "labs") return `<div class="course-panel two-column-panel"><div class="card"><h3>Add lab work</h3><p class="small">Create a lab for <strong>${course.name}</strong> and move it through its stages.</p>${courseLabForm(course)}</div><div class="card"><h3>${course.name} labs</h3><ul class="clean course-record-list">${labs.map((l) => `<li><strong>Lab ${l.lab_number || "-"}: ${l.experiment_title}</strong><div class="small">Due ${l.due_date || "not set"} · ${l.pipeline_stage}</div><div class="row"><select data-lab-stage="${l.id}">${["Task Given", "Understanding", "Implementation", "Testing", "Report", "Submission", "Viva"].map((s) => `<option ${s === l.pipeline_stage ? "selected" : ""}>${s}</option>`).join("")}</select><button class="action" data-lab-submit="${l.id}">Submit</button><button class="action danger" data-lab-delete="${l.id}">Delete</button></div></li>`).join("") || "<li class='empty-state'>No labs for this course yet.</li>"}</ul></div></div>`;
-  if (panel === "timetable") return `<div class="course-panel two-column-panel"><div class="card"><h3>Add class schedule</h3><p class="small">This slot will only appear in the timetable for <strong>${course.name}</strong>.</p>${courseSlotForm(course)}</div><div class="card"><h3>${course.name} timetable</h3><ul class="clean course-record-list">${slots.map((s) => `<li><strong>${s.day_of_week}</strong> · ${s.start_time}–${s.end_time}<div class="small">${s.room || "Room not set"}</div><button class="action danger" data-slot-delete="${s.id}">Delete slot</button></li>`).join("") || "<li class='empty-state'>No classes scheduled for this course yet.</li>"}</ul></div></div>`;
+  if (panel === "timetable") return `<div class="course-panel two-column-panel"><div class="card"><h3>Add class schedule</h3><p class="small">This slot will only appear in the timetable for <strong>${course.name}</strong>.</p>${courseSlotForm(course)}</div><div class="card"><h3>${course.name} timetable</h3><ul class="clean course-record-list">${slots.map((s) => `<li><strong>${s.day_of_week}</strong> · ${formatTime(s.start_time)}–${formatTime(s.end_time)}<div class="small">${s.room || "Room not set"}</div><button class="action danger" data-slot-delete="${s.id}">Delete slot</button></li>`).join("") || "<li class='empty-state'>No classes scheduled for this course yet.</li>"}</ul></div></div>`;
   return `<div class="course-panel course-overview"><div class="course-stat"><span>Tasks</span><strong>${tasks.length}</strong><small>${tasks.filter((t) => t.status !== "Completed").length} still open</small></div><div class="course-stat"><span>Lectures</span><strong>${lectures.length}</strong><small>${lectures.filter((l) => !l.is_reviewed).length} to review</small></div><div class="course-stat"><span>Labs</span><strong>${labs.length}</strong><small>${labs.filter((l) => l.pipeline_stage !== "Submission" && l.pipeline_stage !== "Viva").length} in progress</small></div><div class="course-stat"><span>Classes</span><strong>${slots.length}</strong><small>scheduled each week</small></div><div class="card course-progress-card"><h3>Course progress</h3><div class="course-health"><div>Task completion<div class="progress-track"><span style="width:${health.taskCompletion}%"></span></div></div><div>Lecture review<div class="progress-track"><span style="width:${health.lectureReview}%"></span></div></div></div></div></div>`;
 }
 

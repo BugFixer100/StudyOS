@@ -3,7 +3,7 @@ export function renderLecturesView(state) {
   const rows = state.lectures.length
     ? state.lectures
       .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .map((l, idx) => `<li>
+      .map((l, idx) => `<li data-record-id="${l.id}">
           <strong>#${idx + 1} ${state.courseName[l.course_id] || "Course"}</strong> • ${l.date}
           <div class="small">Topics: ${l.topics_covered || "-"}</div>
           <div class="small">Concepts: ${l.key_concepts || "-"}</div>

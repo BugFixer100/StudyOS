@@ -54,6 +54,10 @@ class Course(Base):
     labs = relationship("Lab", back_populates="course", cascade="all, delete-orphan")
     notes = relationship("Note", back_populates="course", cascade="all, delete-orphan")
     resources = relationship("Resource", back_populates="course", cascade="all, delete-orphan")
+    study_sessions = relationship("StudySession", back_populates="course", cascade="all, delete-orphan")
+    exam_plan = relationship("ExamPlan", back_populates="course", uselist=False, cascade="all, delete-orphan")
+    exam_topics = relationship("ExamTopic", back_populates="course", cascade="all, delete-orphan")
+    teacher_questions = relationship("TeacherQuestion", back_populates="course", cascade="all, delete-orphan")
 
 
 class ClassSchedule(Base):
@@ -70,6 +74,22 @@ class ClassSchedule(Base):
     room = Column(String, nullable=True)
 
     course = relationship("Course", back_populates="schedules")
+    exceptions = relationship("ScheduleException", back_populates="schedule", cascade="all, delete-orphan")
+
+
+class ScheduleException(Base):
+    __tablename__ = "schedule_exceptions"
+
+    id = Column(Integer, primary_key=True)
+    schedule_id = Column(Integer, ForeignKey("class_schedules.id"), nullable=False)
+    exception_date = Column(Date, nullable=False)
+    is_cancelled = Column(Boolean, default=False, nullable=False)
+    start_time = Column(Time, nullable=True)
+    end_time = Column(Time, nullable=True)
+    room = Column(String, nullable=True)
+    note = Column(Text, nullable=True)
+
+    schedule = relationship("ClassSchedule", back_populates="exceptions")
 
 
 class Lecture(Base):
@@ -243,3 +263,58 @@ class Resource(Base):
     link_or_path = Column(String, nullable=False)
 
     course = relationship("Course", back_populates="resources")
+
+
+class InboxItem(Base):
+    __tablename__ = "inbox_items"
+
+    id = Column(Integer, primary_key=True)
+    text = Column(Text, nullable=False)
+    kind = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class StudySession(Base):
+    __tablename__ = "study_sessions"
+
+    id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    planned_minutes = Column(Integer, nullable=False)
+    started_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    ended_at = Column(DateTime, nullable=True)
+    outcome = Column(Text, nullable=True)
+
+    course = relationship("Course", back_populates="study_sessions")
+
+
+class ExamPlan(Base):
+    __tablename__ = "exam_plans"
+
+    id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False, unique=True)
+    exam_date = Column(Date, nullable=True)
+    syllabus = Column(Text, nullable=True)
+
+    course = relationship("Course", back_populates="exam_plan")
+
+
+class ExamTopic(Base):
+    __tablename__ = "exam_topics"
+
+    id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    name = Column(String, nullable=False)
+    is_done = Column(Boolean, default=False, nullable=False)
+
+    course = relationship("Course", back_populates="exam_topics")
+
+
+class TeacherQuestion(Base):
+    __tablename__ = "teacher_questions"
+
+    id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    text = Column(Text, nullable=False)
+    is_done = Column(Boolean, default=False, nullable=False)
+
+    course = relationship("Course", back_populates="teacher_questions")

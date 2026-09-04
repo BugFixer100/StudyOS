@@ -25,7 +25,7 @@ from sqlalchemy import text
 
 from database import engine, Base, get_db
 import models  # noqa: F401  (imported so its tables get registered with Base)
-from routers import courses, tasks, lectures, labs, timetable, dashboard
+from routers import courses, tasks, lectures, labs, timetable, dashboard, academic
 
 # Create all tables that are defined in models.py, if they don't
 # already exist. Safe to run every time the app starts.
@@ -42,6 +42,7 @@ app.include_router(lectures.router)
 app.include_router(labs.router)
 app.include_router(timetable.router)
 app.include_router(dashboard.router)
+app.include_router(academic.router)
 
 
 @app.get("/api/health")

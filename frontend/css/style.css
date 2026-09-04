@@ -39,6 +39,12 @@ body {
   cursor: pointer;
 }
 .sidebar button span { display: inline-block; font-size: 1.12rem; margin-right: 10px; text-align: center; width: 20px; }.sidebar button.active, .sidebar button:hover { background: #dbe8f8; color: #35659b; }.sidebar .primary { background: #3978c5; color: #fff; font-weight: 700; margin-top: auto; text-align: center; }
+.search-result { background: transparent; border: 0; color: inherit; cursor: pointer; display: block; padding: 10px 0; text-align: left; width: 100%; }
+.search-result:hover { background: #f3f7fc; }
+.notification-panel { background: #fff; border: 1px solid #d7e2ed; border-radius: 12px; box-shadow: 0 16px 40px rgba(17, 39, 62, .2); color: #22364b; position: absolute; right: 24px; top: 54px; width: min(360px, calc(100vw - 28px)); z-index: 20; }
+.notification-panel-heading { align-items: center; border-bottom: 1px solid #e7edf3; display: flex; justify-content: space-between; padding: 13px 15px; }
+.notification-panel-heading strong, .notification-panel-heading span { display: block; }.notification-panel-heading strong { font-size: .86rem; }.notification-panel-heading span { color: #718297; font-size: .72rem; margin-top: 3px; }.notification-close { background: transparent; border: 0; color: #75879a; cursor: pointer; font-size: 1.2rem; }
+.notification-panel ul { list-style: none; margin: 0; padding: 4px 7px 8px; }.notification-panel li { border-bottom: 1px solid #edf1f5; }.notification-panel li:last-child { border-bottom: 0; }.notification-panel li button { background: transparent; border: 0; cursor: pointer; display: block; padding: 10px 8px; text-align: left; width: 100%; }.notification-panel li button:hover { background: #f3f7fc; border-radius: 8px; }.notification-panel li strong, .notification-panel li small { display: block; }.notification-panel li strong { color: #284968; font-size: .8rem; margin-top: 3px; }.notification-panel li small { color: #708398; font-size: .73rem; margin-top: 3px; }.notification-kind { color: #3978c5; font-size: .63rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }.notification-kind.task { color: #b56b1d; }.notification-empty { color: #728499; font-size: .8rem; margin: 0; padding: 18px 15px; }
 .content { background: radial-gradient(circle at 64% 0, #fffefa, var(--bg) 66%); padding: 22px clamp(18px, 4vw, 52px); }
 .topbar { align-items: center; display: flex; justify-content: space-between; margin: 0 auto 4px; max-width: 1050px; }.topbar > div { display: none; }
 #status { margin: 0; color: var(--muted); font-size: .9rem; }

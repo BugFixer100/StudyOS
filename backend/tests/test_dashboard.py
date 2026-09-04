@@ -85,3 +85,33 @@ def test_build_today_dashboard_includes_classes_and_top_actions():
     assert len(result["classes_today"]) >= 1
     assert len(result["top_actions"]) >= 1
     assert result["top_actions"][0]["title"] == "Assignment 2"
+
+
+def test_build_today_dashboard_excludes_submitted_tasks():
+    db = DummyDB()
+
+    class Course:
+        def __init__(self):
+            self.id = 1
+            self.name = "Algorithms"
+            self.type = "theory"
+            self.instructor = None
+
+    class Task:
+        def __init__(self):
+            self.id = 1
+            self.course_id = 1
+            self.title = "Submitted assignment"
+            self.task_type = "Assignment"
+            self.status = "Submitted"
+            self.priority = "High"
+            self.due_date = date.today()
+            self.estimated_minutes = 60
+
+    db.courses.append(Course())
+    db.tasks.append(Task())
+
+    result = build_today_dashboard(db)
+
+    assert result["top_actions"] == []
+    assert result["urgent_items"] == []

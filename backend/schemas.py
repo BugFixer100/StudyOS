@@ -92,6 +92,22 @@ class ClassScheduleRead(BaseModel):
     room: Optional[str] = None
 
 
+class ScheduleExceptionCreate(BaseModel):
+    schedule_id: int
+    exception_date: date_
+    is_cancelled: bool = False
+    start_time: Optional[time_] = None
+    end_time: Optional[time_] = None
+    room: Optional[str] = None
+    note: Optional[str] = None
+
+
+class ScheduleExceptionRead(ScheduleExceptionCreate):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+
+
 # ---------- Lecture ----------
 
 class LectureCreate(BaseModel):
@@ -199,7 +215,6 @@ class TaskRead(BaseModel):
 # ---------- Subtask ----------
 
 class SubtaskCreate(BaseModel):
-    task_id: int
     title: str
 
 
@@ -309,3 +324,88 @@ class ResourceRead(BaseModel):
     course_id: int
     title: str
     link_or_path: str
+
+
+# ---------- Academic workflow helpers ----------
+
+class InboxItemCreate(BaseModel):
+    text: str
+    kind: Optional[str] = None
+
+
+class InboxItemRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    text: str
+    kind: Optional[str] = None
+    created_at: datetime
+
+
+class StudySessionCreate(BaseModel):
+    course_id: int
+    planned_minutes: int
+
+
+class StudySessionUpdate(BaseModel):
+    ended_at: Optional[datetime] = None
+    outcome: Optional[str] = None
+
+
+class StudySessionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    course_id: int
+    planned_minutes: int
+    started_at: datetime
+    ended_at: Optional[datetime] = None
+    outcome: Optional[str] = None
+
+
+class ExamPlanUpsert(BaseModel):
+    exam_date: Optional[date_] = None
+    syllabus: Optional[str] = None
+
+
+class ExamPlanRead(ExamPlanUpsert):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    course_id: int
+
+
+class ExamTopicCreate(BaseModel):
+    name: str
+
+
+class ExamTopicUpdate(BaseModel):
+    is_done: Optional[bool] = None
+    name: Optional[str] = None
+
+
+class ExamTopicRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    course_id: int
+    name: str
+    is_done: bool
+
+
+class TeacherQuestionCreate(BaseModel):
+    text: str
+
+
+class TeacherQuestionUpdate(BaseModel):
+    is_done: Optional[bool] = None
+    text: Optional[str] = None
+
+
+class TeacherQuestionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    course_id: int
+    text: str
+    is_done: bool

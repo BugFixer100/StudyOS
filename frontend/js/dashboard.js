@@ -1,3 +1,5 @@
+import { formatTime } from "./time.js?v=studyos-course-workspace-1";
+
 function badgeClass(status) {
   const key = (status || "").toLowerCase();
   if (key.includes("progress")) return "progress";
@@ -29,13 +31,6 @@ function formatTaskUrgency(urgency) {
   if (days === null || days === undefined) return urgency.label;
   const dayText = urgency.is_overdue ? `${Math.abs(days)}d overdue` : days === 0 ? "today" : `${days}d`;
   return `${urgency.label} (${dayText})`;
-}
-
-function displayTime(value) {
-  if (!value) return "TBA";
-  const [hour, minute] = value.split(":").map(Number);
-  const suffix = hour >= 12 ? "PM" : "AM";
-  return `${((hour + 11) % 12) + 1}:${String(minute).padStart(2, "0")} ${suffix}`;
 }
 
 function humanDate(value) {
@@ -70,11 +65,12 @@ export function renderTodayView(state) {
   const urgentItems = state.dashboard?.urgent_items || [];
   const topActions = state.dashboard?.top_actions || [];
   const nextClass = state.dashboard?.next_class;
+  const tomorrowPreparation = state.dashboard?.tomorrow_preparation || [];
   const previousLecture = state.previousLecture;
 
   const classRows = classes.length
     ? classes.map((c) => `<li class="class-row">
-        <time>${displayTime(c.start_time)}</time><span class="class-dot ${badgeClass(c.status)}"></span>
+        <time>${formatTime(c.start_time)}</time><span class="class-dot ${badgeClass(c.status)}"></span>
         <div><strong>${c.course_name}</strong><small>${c.course_type || "Class"}${c.room ? ` · ${c.room}` : ""}</small></div>
         <span class="schedule-status ${badgeClass(c.status)}">${c.status}</span>
       </li>`).join("")
@@ -85,7 +81,7 @@ export function renderTodayView(state) {
   const taskRows = topActions.length
     ? topActions.slice(0, 3).map((t) => `<li><label><input type="checkbox" data-top-task="${t.id}"/> <span>${t.title}</span></label></li>`).join("")
     : `<li class="empty-state">Your top tasks will appear here.</li>`;
-  const reminders = topActions.slice(1, 4);
+  const reminders = state.dashboard?.reminders || topActions.slice(1, 4);
   const reminderRows = reminders.length
     ? reminders.map((t) => `<li>${t.title}</li>`).join("")
     : `<li>Review your upcoming coursework.</li><li>Capture notes after class.</li>`;
@@ -93,12 +89,23 @@ export function renderTodayView(state) {
     ? `<p class="lecture-topic">${previousLecture.topics_covered || "Previous lecture"}</p>
        <p><span>Teacher emphasized:</span> ${previousLecture.teacher_emphasis || "No emphasis recorded."}</p>`
     : `<p class="lecture-topic">No lecture memory yet</p><p><span>Tip:</span> Capture a short summary after your next class.</p>`;
+  const tomorrowRows = tomorrowPreparation.length
+    ? tomorrowPreparation.map((item) => `<article class="prep-item">
+        <div class="prep-item-heading"><div><strong>${item.course_name}</strong><span>${formatTime(item.start_time)}–${formatTime(item.end_time)}${item.room ? ` · ${item.room}` : ""}</span></div><span class="prep-type">${item.course_type}</span></div>
+        <div class="prep-columns"><div><b>Review</b><p>${item.last_topic || "No previous topic recorded."}</p></div><div><b>Focus</b><p>${item.due_tasks.length ? item.due_tasks.join(" · ") : "Key concepts and examples"}</p></div><div><b>Ask your teacher</b><p>${item.questions_to_ask.length ? item.questions_to_ask.join(" · ") : "No question captured yet."}</p></div></div>
+      </article>`).join("")
+    : `<p class="empty-state">No classes scheduled tomorrow.</p>`;
 
   return `<section class="today-dashboard">
     <div class="dashboard-greeting"><h1>Good ${new Date().getHours() < 12 ? "morning" : "afternoon"}, Fida <span>👋</span></h1><p>${humanDate(state.dashboard?.date)}</p></div>
     <section class="schedule-card">
       <div class="section-heading"><h2>Today’s classes</h2><button class="text-button" id="check-academics">Check academics</button></div>
       <ul class="class-list">${classRows}</ul>
+    </section>
+    <section class="prep-notification">
+      <div class="prep-notification-header"><div><span class="eyebrow">Before tomorrow</span><h2>Prepare for your next classes</h2></div><span class="prep-count">${tomorrowPreparation.length} class${tomorrowPreparation.length === 1 ? "" : "es"}</span></div>
+      <p class="prep-intro">Review the last topic, notice pending work, and carry one good question into class.</p>
+      <div class="prep-list">${tomorrowRows}</div>
     </section>
     <div class="dashboard-columns">
       <div class="dashboard-stack">
@@ -110,7 +117,7 @@ export function renderTodayView(state) {
       </div>
       <div class="dashboard-stack">
         <article class="focus-card next-class-card">
-          <div class="next-heading"><span>📚 Next class</span><strong>${nextClass ? displayTime(nextClass.start_time) : "—"}</strong></div>
+              <div class="next-heading"><span>📚 Next class</span><strong>${nextClass ? formatTime(nextClass.start_time) : "—"}</strong></div>
           ${nextClass ? `<h2>${nextClass.course_name}</h2>` : `<h2>No upcoming class</h2>`}
           <div class="previous-lecture"><h3>Last lecture</h3>${previousLectureContent}</div>
           ${nextClass ? `<button class="blue-button" id="open-review-modal">Quick review <span>→</span></button>` : ""}

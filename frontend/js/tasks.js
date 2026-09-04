@@ -1,3 +1,5 @@
+import { formatTime } from "./time.js?v=studyos-course-workspace-1";
+
 const TASK_TYPES = ["Homework", "Assignment", "Lab Assignment", "Lab Report", "Project", "Quiz Prep", "Exam Prep", "Reading", "Practice", "Coding Task", "Submission", "Presentation", "Viva Prep"];
 const TASK_STATUS = ["Not Started", "In Progress", "Blocked", "Submitted", "Completed"];
 const PRIORITY = ["Low", "Medium", "High", "Urgent"];
@@ -25,14 +27,18 @@ function urgencyText(urgency) {
 
 export function renderTasksView(state) {
   const courseOptions = state.courses.map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
-  const tasksHtml = state.tasks.length
-    ? state.tasks.map((t) => `<li class="task-item">
-        <div class="row">
-          <strong>${t.title}</strong>
+  const openTasks = state.tasks.filter((task) => !["Completed", "Submitted"].includes(task.status));
+  const urgentTasks = state.tasks.filter((task) => ["Overdue", "Critical"].includes(task.urgency?.label));
+  const dueSoon = state.tasks.filter((task) => task.urgency?.days_left !== null && task.urgency?.days_left <= 7 && task.urgency?.days_left >= 0);
+  const orderedTasks = [...state.tasks].sort((a, b) => (state.courseName[a.course_id] || "").localeCompare(state.courseName[b.course_id] || ""));
+  const tasksHtml = orderedTasks.length
+    ? orderedTasks.map((t, index) => `${index === 0 || orderedTasks[index - 1].course_id !== t.course_id ? `<li class="task-course-heading"><span>${state.courseName[t.course_id] || "Course"}</span><small>${orderedTasks.filter((task) => task.course_id === t.course_id).length} task${orderedTasks.filter((task) => task.course_id === t.course_id).length === 1 ? "" : "s"}</small></li>` : ""}<li class="task-item" data-record-id="${t.id}">
+        <div class="task-heading">
+          <div><strong>${t.title}</strong><span class="task-course">${state.courseName[t.course_id] || "Course"}</span></div>
           <span class="badge ${urgencyBadgeClass(t.urgency?.label)}">${urgencyText(t.urgency)}</span>
         </div>
         <div class="task-meta">Type: ${t.task_type} • Priority: ${t.priority} • Status: ${t.status} • Progress: ${t.progress_percent}%</div>
-        <div class="small">Due: ${t.due_date || "-"} ${t.due_time || ""} • Estimate: ${t.estimated_minutes || 0} min</div>
+        <div class="small">Due: ${t.due_date || "-"} ${t.due_time ? formatTime(t.due_time) : ""} • Estimate: ${t.estimated_minutes || 0} min</div>
         <div class="small">Submission: ${t.submission_method || "-"} ${t.submission_link ? `• <a href="${t.submission_link}" target="_blank">Link</a>` : ""}</div>
         <details><summary>Notes / Subtasks / Attachments</summary>
           <p>${t.notes || "No notes"}</p>
@@ -43,7 +49,7 @@ export function renderTasksView(state) {
           </div>
           <div class="small">Attachments: ${(state.localAttachments.tasks?.[t.id] || []).join(", ") || "None"}</div>
         </details>
-        <div class="row">
+        <div class="task-actions">
           <button class="action" data-task-edit="${t.id}">Edit</button>
           <button class="action" data-task-submit="${t.id}">Mark Submitted</button>
           <button class="action danger" data-task-delete="${t.id}">Delete</button>
@@ -55,8 +61,9 @@ export function renderTasksView(state) {
   const dangerHtml = dangerTasks.slice(0, 5).map((t) => `<li>${t.title} (${t.urgency.label})</li>`).join("") || "<li>No danger-zone tasks.</li>";
 
   return `
-    <div class="grid cols-2">
-      <div class="card">
+    <div class="task-page">
+      <div class="task-summary"><div><span>Open work</span><strong>${openTasks.length}</strong></div><div><span>Urgent</span><strong>${urgentTasks.length}</strong></div><div><span>Due this week</span><strong>${dueSoon.length}</strong></div></div>
+      <div class="card task-create-card">
         <h3>Create Task</h3>
         <form id="task-form">
           <label>Title<input name="title" required /></label>
@@ -81,12 +88,12 @@ export function renderTasksView(state) {
         </form>
       </div>
 
-      <div class="card">
+      <div class="card task-danger-card">
         <h3>Danger Zone</h3>
         <ul class="clean danger-list">${dangerHtml}</ul>
       </div>
 
-      <div class="card" style="grid-column: 1 / -1;">
+      <div class="card task-list-card" style="grid-column: 1 / -1;">
         <h3>All Tasks</h3>
         <ul class="clean">${tasksHtml}</ul>
       </div>

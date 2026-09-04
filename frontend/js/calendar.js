@@ -1,3 +1,5 @@
+import { formatTime } from "./time.js?v=studyos-course-workspace-1";
+
 const COLORS = {
   class: "#3b82f6",
   assignment: "#f59e0b",
@@ -13,7 +15,7 @@ function eventRow(event) {
 export function collectEvents(state) {
   const classEvents = state.timetable.map((s) => ({
     dateLabel: s.day_of_week,
-    title: `${state.courseName[s.course_id] || "Course"} ${s.start_time}-${s.end_time}`,
+    title: `${state.courseName[s.course_id] || "Course"} ${formatTime(s.start_time)}-${formatTime(s.end_time)}`,
     type: "class",
     color: COLORS.class,
   }));
@@ -33,8 +35,8 @@ export function collectEvents(state) {
   }));
 
   const studyEvents = (state.studySessions || []).map((s) => ({
-    dateLabel: s.date,
-    title: `Study ${state.courseName[s.course_id] || "General"} (${s.duration}m)`,
+    dateLabel: s.started_at ? s.started_at.slice(0, 10) : "No date",
+    title: `Study ${state.courseName[s.course_id] || "General"} (${s.planned_minutes}m)`,
     type: "study",
     color: COLORS.study,
   }));
@@ -47,19 +49,23 @@ export function renderCalendarView(state) {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const weeklyCells = days.map((d) => `<div class="calendar-cell"><h5>${d}</h5><ul class="clean">${events.filter((e) => e.dateLabel === d).map(eventRow).join("") || "<li>-</li>"}</ul></div>`).join("");
 
-  const upcoming = events.filter((e) => /^\d{4}-\d{2}-\d{2}$/.test(e.dateLabel)).sort((a, b) => a.dateLabel.localeCompare(b.dateLabel)).slice(0, 20);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const weekEnd = new Date(today);
+  weekEnd.setDate(today.getDate() + 6);
+  const upcoming = events.filter((e) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(e.dateLabel)) return false;
+    const eventDate = new Date(`${e.dateLabel}T00:00:00`);
+    return eventDate >= today && eventDate <= weekEnd;
+  }).sort((a, b) => a.dateLabel.localeCompare(b.dateLabel));
 
   return `<div class="grid cols-2">
     <div class="card" style="grid-column:1/-1;">
       <h3>Weekly Calendar View</h3><div class="calendar-grid">${weeklyCells}</div>
     </div>
     <div class="card">
-      <h3>Daily / Upcoming Events</h3>
+      <h3>Next 7 days</h3>
       <ul class="clean">${upcoming.map((e) => `<li>${e.dateLabel} • ${eventRow(e)}</li>`).join("") || "<li>No dated events.</li>"}</ul>
-    </div>
-    <div class="card">
-      <h3>Monthly Overview (Next 30 events)</h3>
-      <ul class="clean">${events.slice(0, 30).map((e) => `<li>${e.dateLabel} • ${e.title}</li>`).join("") || "<li>No events.</li>"}</ul>
     </div>
   </div>`;
 }
